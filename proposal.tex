@@ -1,0 +1,98 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{Adaptive Real-time Strategy Management in High-Frequency Trading: A Large Language Model Approach for Cryptocurrency Markets\\
+}
+
+\author{\IEEEauthorblockN{1\textsuperscript{st} Wentao Ye}
+\IEEEauthorblockA{\textit{SIGS} \\
+\textit{Tsinghua University}\\
+Shezhen, China \\
+email address or ORCID}
+\and
+\IEEEauthorblockN{2\textsuperscript{nd} Jiadong Li}
+\IEEEauthorblockA{\textit{SIGS} \\
+\textit{Tsinghua University}\\
+Shezhen, China \\
+lijd23@mails.tsinghua.edu.cn}
+\and
+\IEEEauthorblockN{3\textsuperscript{rd} Huaxuan Li}
+\IEEEauthorblockA{\textit{SIGS} \\
+\textit{Tsinghua University}\\
+Shezhen, China \\
+lhx23@mails.tsinghua.edu.cn}
+
+}
+
+\maketitle
+
+\section{Introduction}
+
+\subsection{Background and Motivations}
+
+The cryptocurrency market is distinguished by several unique characteristics that differentiate it from traditional financial markets. Cryptocurrencies are known for their extreme price volatility. Prices can swing dramatically within very short periods, which can be attributed to market sentiment, speculative trading, and news events.  While volatility can create opportunities for traders, the extreme price swings often seen in crypto markets can also increase the risk of high-frequency trading (HFT) strategies. The unpredictability of price movements in crypto can lead to significant losses if not managed correctly. 
+
+Recent advancements in artificial intelligence, particularly the development of Large Language Models (LLMs) like GPT-4, have opened up innovative avenues for financial analysis, particularly in volatile markets like cryptocurrencies. As sentiments expressed on social media platforms wield substantial influence over cryptocurrency market dynamics, sentiment analysis has emerged as a crucial tool for gauging public opinion and predicting market trends.
+
+\begin{itemize}
+\item LLMs can effectively parse and interpret extensive data from diverse sources like news articles, social media, and financial reports. This comprehensive approach provides traders with immediate insights into market sentiment shifts, essential for High-Frequency Trading (HFT) strategies that require rapid adjustments based on the latest market data.
+\item Beyond mere sentiment analysis, LLMs can assist in more nuanced risk assessment tasks by understanding the context and implications of market events or news. They can evaluate the potential impact of incoming news on market conditions, helping traders to manage risks more effectively and respond to market conditions proactively. By integrating these advanced analytical capabilities, LLMs enhance the predictive accuracy and strategic sophistication of trading operations in the volatile cryptocurrency market.
+\end{itemize}
+
+\subsection{Problem Formulation}
+
+Unlike traditional financial markets, Cryptocurrency markets are characterized by their high volatility and non-stop trading, the events and news can have an immediate impact on prices, the market sentiment can shift rapidly, and the trends can reverse within minutes, which necessitates robust, responsive, and adaptive trading mechanisms. To tackle these challenges, we will effective integrate of real-time sentiment and event analysis into HFT strategies to enhance decision-making and profitability.
+
+\section{RELATED WORK}
+
+\subsection{High-Frequency Trading in Crypto}
+
+HFT, aiming to profit from slight price fluctuation in a short period of time in the market, has been widely used in companies (Zhou et al. 2021). Crypto traders invest differently from those in stock markets because of the high volatility (Delfabbro, King, and Williams 2021). In the Crypto market, there are many high-frequency technical indicators (Huang, Huang, and Ni 2019), such as imbalance volume (IV) (Chordia, Roll, and Subrahmanyam 2002) and moving average convergence divergence (MACD) (Krug, Dobaj, and Macher 2022), to capture buying and selling pressures among different time scales. However, these technical indicators also have limitations. In the volatile Crypto market, technical indicators may produce false signals. The result is sensitive to hyper-parameters like the take profit point, the stop loss or the length of the rolling windows.
+
+\subsection{HRL for Quantitative Trading}
+
+Hierarchical Reinforcement Learning (HRL), which decomposes a long-horizon task into a hierarchy of subproblems, has been studied for decades. There are some hierarchical RL frameworks for quantitative trading. HRPM (Wang et al. 2021) utilizes a hierarchical framework to simulate portfolio management and order execution. MetaTrader (Niu, Li, and Li 2022) proposes a router to pick the most suitable strategy for the current market situation. EarnHFT (Qin et al. 2023) proposes a novel three-stage hierarchical RL framework for HFT which application explored in HFT where only one asset is traded. However, these hierarchical frameworks are all utilized neglecting the importance of real-time sentiment and event analysis in the volatile Crypto market.
+
+\subsection{LLMs in Financial Analysis}
+
+LLMs in financial analysis is a relatively new field. Traditional financial analysis work show unsatisfactory performance or demand huge amounts of labeled data that is hard to acquire in practice. (Deng et al. 2023) conduct an exploratory study of leveraging the in-context learning ability of LLMs to overcome the data challenge.InvestLM (Yang et al. 2023), tuned on LLaMA-65B, is a LLM for investment using financial domain instruction tuning. (Pavlyshenko 2023) consider and test the fine-tuning Llama2 LLM model on financial dataset on multitask instructions, such as analysing a text from financial market perspectives, summarizing a text and extracting named entities with appropriate sentiments. However, these works focus on the general financial market, neglecting the importance of real-time sentiment and event analysis in the volatile Crypto market.
+
+\section{PROPOSED METHOD}
+To address these challenges, we propose a multi-faceted HFT strategy tailored for the cryptocurrency market. Our approach involves:
+
+\subsection{Hierarchical Reinforcement Learning}
+Employing a hierarchical reinforcement learning framework to optimize trading strategies. This framework will decompose the trading task into a hierarchy of sub-problems, enabling the system to learn and adapt to the complex and dynamic nature of the cryptocurrency market.
+
+\subsection{Advanced Sentiment Analysis}
+Utilizing NLP techniques to analyze market sentiment from various sources including social media and news outlets. This will help in predicting short-term market movements influenced by trader sentiments.
+
+\subsection{Adaptive Real-time Strategy Management}
+Implementing adaptive real-time strategy management tools that not only assess risks but also dynamically tailor trading strategies to the current market conditions and the inherent volatility of the crypto markets. This approach ensures that trading strategies are continuously optimized in response to real-time data, thereby enhancing responsiveness and potential profitability.
+
+This method aims to leverage the high potential returns of the crypto market while mitigating the risks associated with its volatility and operational challenges.
+
+This structured approach hopes to provide a blueprint for effectively navigating the complex landscape of the cryptocurrency market through HFT strategies that are robust, secure, and adaptive to the volatile nature of this emerging asset class.
+
+\begin{thebibliography}{00}
+\bibitem{b1} M. Qin, S. Sun, W. Zhang, H. Xia, X. Wang, and B. An, “EarnHFT: Efficient Hierarchical Reinforcement Learning for High Frequency Trading,” AAAI, vol. 38, no. 13, pp. 14669–14676, Mar. 2024, doi: 10.1609/aaai.v38i13.29384.
+\bibitem{b2} T. Chordia, R. Roll, and A. Subrahmanyam, “Order imbalance, liquidity, and market returns,” Journal of Financial Economics, 2002.
+\bibitem{b3} M. Yilmaz, P. Clarke, R. Messnarz, and B. Wöran, Eds., Systems, Software and Services Process Improvement: 29th European Conference, EuroSPI 2022, Salzburg, Austria, August 31 – September 2, 2022, Proceedings, vol. 1646. in Communications in Computer and Information Science, vol. 1646. Cham: Springer International Publishing, 2022. doi: 10.1007/978-3-031-15559-8.
+\bibitem{b4} R. Wang, H. Wei, B. An, Z. Feng, and J. Yao, “Commission Fee is not Enough: A Hierarchical Reinforced Framework for Portfolio Management,” AAAI, vol. 35, no. 1, pp. 626–633, May 2021, doi: 10.1609/aaai.v35i1.16142.
+\bibitem{b5} H. Niu, S. Li, and J. Li, “MetaTrader: An Reinforcement Learning Approach Integrating Diverse Policies for Portfolio Optimization,” in Proceedings of the 31st ACM International Conference on Information \& Knowledge Management, Atlanta GA USA: ACM, Oct. 2022, pp. 1573–1583. doi: 10.1145/3511808.3557363.
+\bibitem{b6} X. Deng, V. Bashlovkina, F. Han, S. Baumgartner, and M. Bendersky, “What do LLMs Know about Financial Markets? A Case Study on Reddit Market Sentiment Analysis,” in Companion Proceedings of the ACM Web Conference 2023, Austin TX USA: ACM, Apr. 2023, pp. 107–110. doi: 10.1145/3543873.3587324.
+\bibitem{b7} Y. Yang, Y. Tang, and K. Y. Tam, “InvestLM: A Large Language Model for Investment using Financial Domain Instruction Tuning.” arXiv, Sep. 14, 2023. Accessed: May 11, 2024. [Online]. Available: http://arxiv.org/abs/2309.13064
+\bibitem{b8} B. M. Pavlyshenko, “Financial News Analytics Using Fine-Tuned Llama 2 GPT Model.” arXiv, Sep. 11, 2023. Accessed: May 11, 2024. [Online]. Available: http://arxiv.org/abs/2308.13032
+\end{thebibliography}
+
+
+\end{document}

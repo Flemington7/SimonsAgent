@@ -1,4 +1,4 @@
-## Real-Time Sentiment and Event Analysis in High-Frequency Trading: A Large Language Model Approach for Cryptocurrency Markets
+## Adaptive Real-time Strategy Management in High-Frequency Trading: A Large Language Model Approach for Cryptocurrency Markets
 
 ### I. INTRODUCTION
 
@@ -10,7 +10,7 @@ Recent advancements in artificial intelligence, particularly the development of 
 * Beyond mere sentiment analysis, LLMs can assist in more nuanced risk assessment tasks by understanding the context and implications of market events or news. They can evaluate the potential impact of incoming news on market conditions, helping traders to manage risks more effectively and respond to market conditions proactively. By integrating these advanced analytical capabilities, LLMs enhance the predictive accuracy and strategic sophistication of trading operations in the volatile cryptocurrency market.
 
 #### B. Problem Formulation
- Unlike traditional financial markets, Cryptocurrency markets are characterized by their high volatility and non-stop trading, the events and news can have an immediate impact on prices, the market sentiment can shift rapidly, and the trends can reverse within minutes, which necessitates robust, responsive, and adaptive trading mechanisms. To tackle these challenges, we will effective integrate of real-time sentiment and event analysis into HFT strategies to enhance decision-making and profitability.
+Unlike traditional financial markets, Cryptocurrency markets are characterized by their high volatility and non-stop trading, the events and news can have an immediate impact on prices, the market sentiment can shift rapidly, and the trends can reverse within minutes, which necessitates robust, responsive, and adaptive trading mechanisms. To tackle these challenges, we will effective integrate of real-time sentiment and event analysis into HFT strategies to enhance decision-making and profitability.
 
 ### II. RELATED WORK
 * High-Frequency Trading in Crypto 
@@ -27,9 +27,12 @@ LLMs in financial analysis is a relatively new field. Traditional financial anal
 ### III. PROPOSED METHOD
 To address these challenges, we propose a multi-faceted HFT strategy tailored for the cryptocurrency market. Our approach involves:
 
-1. **Advanced Sentiment Analysis**: Utilizing NLP techniques to analyze market sentiment from various sources including social media and news outlets. This will help in predicting short-term market movements influenced by trader sentiments.
+1. **Hierarchical Reinforcement Learning (HRL)**: Employing a hierarchical reinforcement learning framework to optimize trading strategies. This framework will decompose the trading task into a hierarchy of subproblems, enabling the system to learn and adapt to the complex and dynamic nature of the cryptocurrency market.
+
+2. **Advanced Sentiment Analysis**: Utilizing NLP techniques to analyze market sentiment from various sources including social media and news outlets. This will help in predicting short-term market movements influenced by trader sentiments.
    
-2. **Adaptive Real-time Strategy Management**: Implementing adaptive real-time strategy management tools that not only assess risks but also dynamically tailor trading strategies to the current market conditions and the inherent volatility of the crypto markets. This approach ensures that trading strategies are continuously optimized in response to real-time data, thereby enhancing responsiveness and potential profitability.
+3. **Adaptive Real-time Strategy Management**: Implementing adaptive real-time strategy management tools that not only assess risks but also dynamically tailor trading strategies to the current market conditions and the inherent volatility of the crypto markets. This approach ensures that trading strategies are continuously optimized in response to real-time data, thereby enhancing responsiveness and potential profitability.
+
 
 This method aims to leverage the high potential returns of the crypto market while mitigating the risks associated with its volatility and operational challenges.
 
@@ -38,7 +41,7 @@ This structured approach hopes to provide a blueprint for effectively navigating
 ### REFERENCES
 [1] M. Qin, S. Sun, W. Zhang, H. Xia, X. Wang, and B. An, “EarnHFT: Efficient Hierarchical Reinforcement Learning for High Frequency Trading,” AAAI, vol. 38, no. 13, pp. 14669–14676, Mar. 2024, doi: 10.1609/aaai.v38i13.29384. 
 
-[2] T. Chordia, R. Roll, and A. Subrahmanyam, “Order imbalance, liquidity, and market returns$,” Journal of Financial Economics, 2002.
+[2] T. Chordia, R. Roll, and A. Subrahmanyam, “Order imbalance, liquidity, and market returns,” Journal of Financial Economics, 2002.
 
 [3] M. Yilmaz, P. Clarke, R. Messnarz, and B. Wöran, Eds., Systems, Software and Services Process Improvement: 29th European Conference, EuroSPI 2022, Salzburg, Austria, August 31 – September 2, 2022, Proceedings, vol. 1646. in Communications in Computer and Information Science, vol. 1646. Cham: Springer International Publishing, 2022. doi: 10.1007/978-3-031-15559-8. 
 
@@ -48,6 +51,6 @@ This structured approach hopes to provide a blueprint for effectively navigating
 
 [6] X. Deng, V. Bashlovkina, F. Han, S. Baumgartner, and M. Bendersky, “What do LLMs Know about Financial Markets? A Case Study on Reddit Market Sentiment Analysis,” in Companion Proceedings of the ACM Web Conference 2023, Austin TX USA: ACM, Apr. 2023, pp. 107–110. doi: 10.1145/3543873.3587324. 
 
-[1] Y. Yang, Y. Tang, and K. Y. Tam, “InvestLM: A Large Language Model for Investment using Financial Domain Instruction Tuning.” arXiv, Sep. 14, 2023. Accessed: May 11, 2024. [Online]. Available: http://arxiv.org/abs/2309.13064 
+[7] Y. Yang, Y. Tang, and K. Y. Tam, “InvestLM: A Large Language Model for Investment using Financial Domain Instruction Tuning.” arXiv, Sep. 14, 2023. Accessed: May 11, 2024. [Online]. Available: http://arxiv.org/abs/2309.13064 
 
-[7] B. M. Pavlyshenko, “Financial News Analytics Using Fine-Tuned Llama 2 GPT Model.” arXiv, Sep. 11, 2023. Accessed: May 11, 2024. [Online]. Available: http://arxiv.org/abs/2308.13032
+[8] B. M. Pavlyshenko, “Financial News Analytics Using Fine-Tuned Llama 2 GPT Model.” arXiv, Sep. 11, 2023. Accessed: May 11, 2024. [Online]. Available: http://arxiv.org/abs/2308.13032
