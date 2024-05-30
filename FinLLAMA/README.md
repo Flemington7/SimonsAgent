@@ -7,23 +7,27 @@ The 'FinLLAMA' repository is a companion to the [Meta Llama 3](https://github.co
 - [Llama Recipes: Examples to get started using the Llama models from Meta with financial data](#examples-to-get-started-using-the-llama-models-from-meta-with-financial-data)
   - [Table of Contents](#table-of-contents)
   - [Getting Started](#getting-started)
-    - [Installing](#installing)
+    - [Installation](#installation)
       - [Install with pip](#install-with-pip)
     - [Getting the Llama models](#getting-the-llama-models)
       - [Model conversion to Hugging Face](#model-conversion-to-hugging-face)
   - [Fine-tuning](#fine-tuning)
-    - [`Overview`](#overview)
-    - [`single-GPU setup`](#single-gpu-setup)
-    - [`multi-GPU setup`](#multi-gpu-setup)
-  - [Evaluation](#evaluation)
-  - [Contributing](#contributing)
+    - [Overview](#overview)
+    - [single-GPU setup](#single-gpu-setup)
+    - [multi-GPU setup](#multi-gpu-setup)
+    - [Custom Datasets (TBD)](#custom-datasets-tbd)
+  - [Evaluation (TBD)](#evaluation-tbd)
+  - [Inference (TBD)](#inference-tbd)
+    - [MP](#mp)
+    - [Finetuned Models (TBD)](#fine-tuned-models-tbd)
+  - [Contributing (TBD)](#contributing)
   - [License](#license)
 
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-### Installing
+### Installation
 Llama-recipes provides a pip distribution for easy install and usage in other projects. Alternatively, it can be installed from source.
 
 > [!NOTE]
@@ -32,7 +36,7 @@ Llama-recipes provides a pip distribution for easy install and usage in other pr
 #### Install with pip
 
 ```bash
-pip install llama-recipes
+pip install -r requirements.txt
 ```
 
 ### Getting the Meta Llama models
@@ -246,7 +250,7 @@ Currently 3 open source datasets are supported that can be found in [Datasets co
     torchrun --nnodes 1 -m llama_recipes.finetuning --use_peft --peft_method lora --quantization --dataset grammar_dataset --train_split "/root/miniconda3/envs/llama3/lib/python3.11/site-packages/llama_recipes/datasets/grammar_dataset/gtrain_10k.csv" --test_split "/root/miniconda3/envs/llama3/lib/python3.11/site-packages/llama_recipes/datasets/grammar_dataset/grammar_validation.csv" --model_name "Meta-Llama-3-8B-Instruct-hf" --output_dir "Meta-Llama-3-8B-Instruct-hf_lora_samsum_dataset_20240522" --save_model False --use_fp16 --use_fast_kernels --one_gpu --context_length 1024 --use_wandb
     ```
 
-* `custom_dataset`: To be continued.
+* `custom_dataset`: TBD.
 
 ### multi-GPU setup
 
@@ -283,13 +287,14 @@ Currently 3 open source datasets are supported that can be found in [Datasets co
     torchrun --nnodes 1 --nproc_per_node 2 -m llama_recipes.finetuning --enable_fsdp --model_name "Meta-Llama-3-8B-Instruct-hf" --use_peft --peft_method lora --dataset grammar_dataset --train_split "/root/miniconda3/envs/llama3/lib/python3.10/site-packages/llama_recipes/datasets/grammar_dataset/gtrain_10k.csv" --test_split "/root/miniconda3/envs/llama3/lib/python3.10/site-packages/llama_recipes/datasets/grammar_dataset/grammar_validation.csv" --dist_checkpoint_root_folder "model_checkpoints" --dist_checkpoint_folder "fine-tuned" --use_fast_kernels --output_dir "Meta-Llama-3-8B-Instruct-hf_lora_grammer_dataset_20240523" --context_length 1024 --num_epochs 10
     ```
 
-* `custom_dataset`: To be continued.
+* `custom_dataset`: TBD.
 
-## Evaluation
+### Custom Datasets (TBD)
+The provided fine tuning scripts allows you to select between three datasets by passing the `dataset` arg to the `llama_recipes.finetuning` module or [`recipes/finetuning/finetuning.py`](../finetuning.py) script. The current options are `grammar_dataset`, `alpaca_dataset`and `samsum_dataset`. Additionally, llama-recipes integrate the OpenAssistant/oasst1 dataset as an [example for a custom dataset](custom_dataset.py) 
 
-To be continued.
+## Evaluation (TBD)
 
-## Inference
+## Inference (TBD)
 
 ### MP
 
@@ -302,14 +307,14 @@ Different models require different model-parallel (MP) values:
 
 All models support sequence length up to 8192 tokens, but we pre-allocate the cache according to `max_seq_len` and `max_batch_size` values. So set those according to your hardware.
 
-### Finetuned Models
+### Fine-tuned Models (TBD)
 
-To be continued.
 
-## Contributing
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+## Contributing (TBD)
+
+
 
 ## License
 
-See the License file for Meta Llama 3 [here](https://llama.meta.com/llama3/license/) and Acceptable Use Policy [here](https://llama.meta.com/llama3/use-policy/)
+This project is licensed under the terms of the MIT license. See the [LICENSE](LICENSE) file for details.
