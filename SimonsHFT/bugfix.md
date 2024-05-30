@@ -84,3 +84,5 @@ mlflow 1.30.0 requires pandas<2, but you have pandas 2.0.3 which is incompatible
 pip install pandas==1.5.3
 pip install yahooquery==2.3.2
 ```
+## Forget Me Not
+In the linux version of qlib examples nested_decision_execution, the provider_uri is set to `/root/onethingai-tmp/.qlib/qlib_data/cn_data` which is not the case in the windows version. The windows version uses `C:/Users/username/.qlib/qlib_data/cn_data` instead. This is important to note when running the examples on a windows machine.
