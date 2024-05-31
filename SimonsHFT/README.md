@@ -54,8 +54,6 @@ The trading algorithm generates decisions based on forecast signals, which are t
 
 1. **Financial Data**: Download and prepare the financial data as required by Qlib. Follow the Qlib documentation for setting up your data.
 
-
-
 ## Running the Workflow
 
 This [workflow](#workflow.py) is an example for nested decision execution in backtesting. Qlib supports nested decision execution in backtesting. It means that users can use different strategies to make trade decision in different frequencies.
