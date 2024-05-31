@@ -30,7 +30,8 @@ To set up the environment, you need to install the required dependencies for bot
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/your-repo/comprehensive-hft.git
+    git clone https://github.com/Flemington7/SimonsAgent.git
+    cd comprehensive-hft
     ```
 
 2. Install the required Python packages:
