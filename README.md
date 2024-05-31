@@ -27,17 +27,17 @@ To set up the environment, you need to install the required dependencies for bot
 
 1. Clone the repository:
 
-    ```bash
+```bash
     git clone https://github.com/Flemington7/SimonsAgent.git
-    ```
+```
 
 2. Install the required Python packages: (TBD)
 
 (Will be updated with the required packages for both FinLLAMA and Qlib, now you can install the packages from the specific directories)
 
-    ```bash
+```bash
     pip install -r requirements.txt
-    ```
+```
 
 ### Data Preparation (TBD)
 

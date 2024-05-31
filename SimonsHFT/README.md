@@ -18,7 +18,6 @@ The `SimonsHFT` is a nested decision execution workflow designed to support high
   - [Collecting Data](#collecting-data)
   - [Checking Frequency Differences](#checking-frequency-differences)
   - [Daily Backtest](#daily-backtest)
-- [License](#license)
 
 ## Introduction
 
@@ -56,33 +55,22 @@ The trading algorithm generates decisions based on forecast signals, which are t
 
 ## Running the Workflow
 
+### Training the Model (TBD)
+
+### Backtesting Example
+
 This [workflow](#workflow.py) is an example for nested decision execution in backtesting. Qlib supports nested decision execution in backtesting. It means that users can use different strategies to make trade decision in different frequencies.
 
-### Weekly Portfolio Generation and Daily Order Execution
+#### Weekly Portfolio Generation and Daily Order Execution
 
 This [workflow](#workflow.py) provides an example that uses a DropoutTopkStrategy (a strategy based on the daily frequency Lightgbm model) in weekly frequency for portfolio generation and uses SBBStrategyEMA (a rule-based strategy that uses EMA for decision-making) to execute orders in daily frequency. 
-
-#### Usage
 
 Start backtesting by running the following command:
 ```bash
 python workflow.py backtest
 ```
 
-### Daily Portfolio Generation and Minutely Order Execution
-
-This [workflow](#workflow.py) also provides a high-frequency example that uses a DropoutTopkStrategy for portfolio generation in daily frequency and uses SBBStrategyEMA to execute orders in minutely frequency. 
-
-#### Usage
-
-Start backtesting by running the following command:
-```bash
-python workflow.py backtest_highfreq
-```
-
-#### Output Example
-
-After running the workflow, you will see the following output like this:
+After running the [workflow](#workflow.py), you will see the following output like this (at this time, we run the weekly portfolio generation and minutely order execution):
 
 ```bash
 [21830:MainThread](2024-05-30 21:35:06,100) INFO - qlib.workflow - [record_temp.py:515] - Portfolio analysis record 'port_analysis_1day.pkl' has been saved as the artifact of the Experiment 1
@@ -116,7 +104,13 @@ pos  0.562500
 [21830:MainThread](2024-05-30 21:35:06,708) INFO - qlib.timer - [log.py:127] - Time cost: 0.000s | waiting `async_log` Done
 ```
 
+#### Daily Portfolio Generation and Minutely Order Execution
 
-## License
+This [workflow](#workflow.py) also provides a high-frequency example that uses a DropoutTopkStrategy for portfolio generation in daily frequency and uses SBBStrategyEMA to execute orders in minutely frequency. 
 
-This project is licensed under the terms of the MIT license. See the [LICENSE](LICENSE) file for details.
+Start backtesting by running the following command:
+```bash
+python workflow.py backtest_highfreq
+```
+
+
