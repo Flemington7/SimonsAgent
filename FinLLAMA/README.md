@@ -1,4 +1,4 @@
-# FinLlama: Examples to get started using the Llama models from Meta with financial data
+# FinLlama: Llama3 Model Fine-tuned with Financial Data
 
 The 'FinLLAMA' repository is a companion to the [Meta Llama 3](https://github.com/meta-llama/llama3) models. The goal of this repository is to provide examples and recipes to get started using the Llama models from Meta with financial data. The repository contains examples of how to fine-tune the Llama models on financial data, how to evaluate the models, and how to use the models for various financial tasks.
 

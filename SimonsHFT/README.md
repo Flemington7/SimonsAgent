@@ -1,8 +1,8 @@
-# Nested Decision Execution Framework for High-Frequency Trading
+# SimonsHFT: Nested Decision Execution Framework for High-Frequency Trading
 
 ## Overview
 
-The `NestedDecisionExecutionWorkflow` is designed to support high-frequency trading (HFT) by integrating multiple levels of trading strategies. This framework allows for joint backtesting of daily and intraday trading strategies, considering their interactions to optimize overall performance.
+The `SimonsHFT` is a nested decision execution workflow designed to support high-frequency trading (HFT) by integrating multiple levels of trading strategies. This framework allows for joint backtesting of daily and intraday trading strategies, considering their interactions to optimize overall performance.
 
 ## Table of Contents
 
@@ -22,16 +22,16 @@ The `NestedDecisionExecutionWorkflow` is designed to support high-frequency trad
 
 ## Introduction
 
-Daily trading (e.g., portfolio management) and intraday trading (e.g., order execution) are typically studied separately in quantitative investment. To achieve joint trading performance, these strategies must interact and be backtested together. The `NestedDecisionExecutionWorkflow` framework supports multi-level joint backtesting strategies, allowing for accurate evaluation and optimization.
+Daily trading (e.g., portfolio management) and intraday trading (e.g., order execution) are typically studied separately in quantitative investment. To achieve joint trading performance, these strategies must interact and be backtested together. The `NestedDecisionExecutionWorkflow` framework provided by `Qlib` supports multi-level joint backtesting strategies, allowing for accurate evaluation and optimization. Our `SimonsHFT` framework is built on top of this framework to support high-frequency trading operations.
 
 ## Framework Design
 
-The nested decision execution framework considers the interaction of strategies at different levels. Each level consists of a "Trading Agent" and "Execution Environment." The "Trading Agent" includes:
+The `SimonsHFT` considers the interaction of strategies at multiple levels. Each level consists of a "Trading Agent" and "Execution Environment." The "Trading Agent" includes:
 - Data processing module ("Information Extractor")
 - Forecasting module ("Forecast Model")
 - Decision generator ("Decision Generator")
 
-The trading algorithm generates decisions based on forecast signals, which are then executed by the "Execution Environment." This nested structure allows for the evaluation and optimization of trading strategies at multiple levels.
+The trading algorithm generates decisions based on forecast signals, which are then executed by the "Execution Environment", and returns the execution results.
 
 ## Getting Started
 
@@ -41,7 +41,7 @@ The trading algorithm generates decisions based on forecast signals, which are t
 
     ```bash
     git clone https://github.com/your-repo/comprehensive-hft.git
-    cd comprehensive-hft
+    cd SimonsHFT
     ```
 
 2. Install the required Python packages:
@@ -54,12 +54,37 @@ The trading algorithm generates decisions based on forecast signals, which are t
 
 1. **Financial Data**: Download and prepare the financial data as required by Qlib. Follow the Qlib documentation for setting up your data.
 
+
+
 ## Running the Workflow
 
+This [workflow](#workflow.py) is an example for nested decision execution in backtesting. Qlib supports nested decision execution in backtesting. It means that users can use different strategies to make trade decision in different frequencies.
 
-### Output Example
+### Weekly Portfolio Generation and Daily Order Execution
 
-After running the workflow, you will see the following output:
+This [workflow](#workflow.py) provides an example that uses a DropoutTopkStrategy (a strategy based on the daily frequency Lightgbm model) in weekly frequency for portfolio generation and uses SBBStrategyEMA (a rule-based strategy that uses EMA for decision-making) to execute orders in daily frequency. 
+
+#### Usage
+
+Start backtesting by running the following command:
+```bash
+    python workflow.py backtest
+```
+
+### Daily Portfolio Generation and Minutely Order Execution
+
+This [workflow](#workflow.py) also provides a high-frequency example that uses a DropoutTopkStrategy for portfolio generation in daily frequency and uses SBBStrategyEMA to execute orders in minutely frequency. 
+
+#### Usage
+
+Start backtesting by running the following command:
+```bash
+    python workflow.py backtest_highfreq
+```
+
+#### Output Example
+
+After running the workflow, you will see the following output like this:
 
 ```bash
 [21830:MainThread](2024-05-30 21:35:06,100) INFO - qlib.workflow - [record_temp.py:515] - Portfolio analysis record 'port_analysis_1day.pkl' has been saved as the artifact of the Experiment 1

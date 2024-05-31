@@ -1,6 +1,6 @@
 # COMPREHENSIVE Information Integration for High-Frequency Trading using Qlib and FinLLAMA
 
-This repository contains the implementation of a comprehensive information integration system for high-frequency trading (HFT) in stock markets. Our approach integrates nested decision execution framework for HFT operations and FinLLAMA for extracting and analyzing financial sentiments from news and social media.
+This repository contains the implementation of a comprehensive information integration system for high-frequency trading (HFT) in stock markets. Our approach integrates nested decision execution framework for HFT operations and LLM for extracting and analyzing financial sentiments from news and social media.
 
 ## Table of Contents
 
@@ -9,7 +9,7 @@ This repository contains the implementation of a comprehensive information integ
   - [Installation](#installation)
   - [Data Preparation](#data-preparation)
 - [FinLLAMA](#finetuning-finllama)
-- [Nested Decision Execution Framework](#qlib)
+- [SimonsHFT](#simonshft)
 - [Backtesting with Qlib](#backtesting-with-qlib)
   - [Setting Up Qlib](#setting-up-qlib)
   - [Running Backtests](#running-backtests)
@@ -31,7 +31,6 @@ To set up the environment, you need to install the required dependencies for bot
 
     ```bash
     git clone https://github.com/your-repo/comprehensive-hft.git
-    cd comprehensive-hft
     ```
 
 2. Install the required Python packages:
@@ -50,7 +49,7 @@ To set up the environment, you need to install the required dependencies for bot
 
 ## FinLLAMA
 
-
+## SimonsHFT
 
 ## Backtesting with Qlib
 
