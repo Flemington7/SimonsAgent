@@ -10,10 +10,8 @@ This repository contains the implementation of a comprehensive information integ
   - [Data Preparation](#data-preparation)
 - [FinLLAMA](#finetuning-finllama)
 - [SimonsHFT](#simonshft)
-- [Backtesting with Qlib](#backtesting-with-qlib)
-  - [Setting Up Qlib](#setting-up-qlib)
-  - [Running Backtests](#running-backtests)
-- [Evaluation](#evaluation)
+- [Evaluation](#evaluation-tbd)
+  - [Running Backtests with Qlib](#running-backtests-with-qlib-tbd)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -33,35 +31,37 @@ To set up the environment, you need to install the required dependencies for bot
     git clone https://github.com/Flemington7/SimonsAgent.git
     ```
 
-2. Install the required Python packages:
+2. Install the required Python packages: (TBD)
+
+(Will be updated with the required packages for both FinLLAMA and Qlib, now you can install the packages from the specific directories)
 
     ```bash
     pip install -r requirements.txt
     ```
 
-### Data Preparation
+### Data Preparation (TBD)
 
-1. **Sentiment Data**: Prepare the sentiment analysis data by processing news and social media texts using FinLLAMA. Ensure that the data is in a format compatible with the finetuning process.
+(Will be updated with the required data preparation steps for both FinLLAMA and Qlib)
 
-2. **Financial Data**: Download and prepare the financial data as required by Qlib. Follow the Qlib documentation for setting up data. As mentioned above, we will integrate the sentiment data with the financial data, and convert it into a format that suitable for backtesting.
+1. **Sentiment Data (TBD)**: Prepare the sentiment analysis data by processing news and social media texts using FinLLAMA. Ensure that the data is in a format compatible with the finetuning process.
+
+2. **Financial Data (TBD)**: Download and prepare the financial data as required by Qlib. Follow the Qlib documentation for setting up data. As mentioned above, we will integrate the sentiment data with the financial data, and convert it into a format that suitable for backtesting.
 
 ## [FinLLAMA](FinLLAMA/README.md)
 
 ## [SimonsHFT](SimonsHFT/README.md)
 
-## Backtesting with Qlib
+## Evaluation (TBD)
 
-### Running Backtests
+Evaluate the performance of the trading strategies and the impact of sentiment analysis on trading decisions. Compare the results with and without sentiment data integration and the benchmark performance.
+
+### Running Backtests with Qlib (TBD)
 
 Set up and run backtests using Qlib with the integrated sentiment data:
 
 ```python
 python SimonsHFT/workflow.py backtest
 ```
-
-## Evaluation (TBD)
-
-Evaluate the performance of the trading strategies and the impact of sentiment analysis on trading decisions. Compare the results with and without sentiment data integration and the benchmark performance.
 
 ## Contributing (TBD)
 

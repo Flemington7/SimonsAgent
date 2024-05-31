@@ -66,7 +66,7 @@ This [workflow](#workflow.py) provides an example that uses a DropoutTopkStrateg
 
 Start backtesting by running the following command:
 ```bash
-    python workflow.py backtest
+python workflow.py backtest
 ```
 
 ### Daily Portfolio Generation and Minutely Order Execution
@@ -77,7 +77,7 @@ This [workflow](#workflow.py) also provides a high-frequency example that uses a
 
 Start backtesting by running the following command:
 ```bash
-    python workflow.py backtest_highfreq
+python workflow.py backtest_highfreq
 ```
 
 #### Output Example
