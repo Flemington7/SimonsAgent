@@ -1,7 +1,0 @@
-name: qlib
-channels:
-  - defaults
-dependencies:
-  - qlib=0.9.5
-  - packaging=21.3
-  

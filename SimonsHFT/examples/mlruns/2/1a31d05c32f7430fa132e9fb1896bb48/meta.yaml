@@ -1,0 +1,15 @@
+artifact_uri: file:///root/onethingai-tmp/qlib/examples/mlruns/2/1a31d05c32f7430fa132e9fb1896bb48/artifacts
+end_time: 1716872118773
+entry_point_name: ''
+experiment_id: '2'
+lifecycle_stage: active
+run_id: 1a31d05c32f7430fa132e9fb1896bb48
+run_name: mlflow_recorder
+run_uuid: 1a31d05c32f7430fa132e9fb1896bb48
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1716872077996
+status: 3
+tags: []
+user_id: root

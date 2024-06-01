@@ -39,6 +39,12 @@ To set up the environment, you need to install the required dependencies for bot
     pip install -r requirements.txt
 ```
 
+If you are using a Windows machine, you can install the version of the required packages using the following command:
+
+```bash
+    pip install -r requirements-win.txt
+```
+
 ### Data Preparation (TBD)
 
 (Will be updated with the required data preparation steps for both FinLLAMA and Qlib)

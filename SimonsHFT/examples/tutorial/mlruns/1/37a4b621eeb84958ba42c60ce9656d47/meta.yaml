@@ -1,0 +1,16 @@
+artifact_uri: file:C:\Users\FlemingtonYeh\OneDrive - mails.tsinghua.edu.cn\Graduate\Learning
+  from Data\SimonsAgent\qlib\examples\tutorial\mlruns/1/37a4b621eeb84958ba42c60ce9656d47/artifacts
+end_time: 1717068447332
+entry_point_name: ''
+experiment_id: '1'
+lifecycle_stage: active
+run_id: 37a4b621eeb84958ba42c60ce9656d47
+run_name: mlflow_recorder
+run_uuid: 37a4b621eeb84958ba42c60ce9656d47
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1717068374277
+status: 3
+tags: []
+user_id: FlemingtonYeh
