@@ -1,0 +1,8 @@
+Analyze the sentiment of the following tweet or news article. Return only the sentiment value as an integer: -1 for negative, 0 for neutral, and 1 for positive.
+
+Text: "Nvidia’s shares jumped 5.2%, propelling its market capitalisation to more than $3tn to become the world’s second-largest company behind Microsoft (MSFT).
+Nvidia’s chips are powering much of the rush into AI, which has seen it become a poster child of the AI boom, with demand for its processors from the likes of Google (GOOG), Microsoft and Facebook owner Meta (META) outstripping supply.
+Nvidia’s shares – up nearly 150% so far this year – are also being boosted by an upcoming move to split its stock by 10-to-one on Friday.
+Dan Coatsworth, investment analyst at AJ Bell, said the stock split will "bring its share price down and make it more affordable to investors who cannot afford to splash out more than a grand per share, as well as benefit employees who use some of their monthly pay packets to invest in the company.""
+
+Sentiment Value:

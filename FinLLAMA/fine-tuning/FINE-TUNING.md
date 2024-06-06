@@ -146,6 +146,7 @@ The args used in the command above are:
 
 > [!NOTE]
 > In case you are using a multi-GPU machine please make sure to only make one of them visible using `export CUDA_VISIBLE_DEVICES=GPU:id`.
+> The --output_dir flag specifies the path to save the PEFT model, and it should not contain any '_', otherwise the PEFT script will not be able to load the model!
 
 ### How to run with default datasets?
 
@@ -159,16 +160,14 @@ Currently 3 open source datasets are supported that can be found in [Datasets co
     # grammar_dataset
     
     torchrun --nnodes 1 -m llama_recipes.finetuning --use_peft --peft_method lora --quantization --dataset grammar_dataset --train_split "/root/miniconda3/envs/llama3/lib/python3.11/site-packages/llama_recipes/datasets/grammar_dataset/gtrain_10k.csv" --test_split "/root/miniconda3/envs/llama3/lib/python3.11/site-packages/llama_recipes/datasets/grammar_dataset/grammar_validation.csv" --model_name "Meta-Llama-3-8B-Instruct-hf" --output_dir "Meta-Llama-3-8B-Instruct-hf_lora_grammar_dataset_20240522" --save_model False --use_fp16 --use_fast_kernels --one_gpu --context_length 1024 --use_wandb
-
-torchrun --nnodes 1 -m llama_recipes.finetuning --use_peft --peft_method lora --quantization --dataset grammar_dataset --train_split "/root/miniconda3/envs/llama3/lib/python3.10/site-packages/llama_recipes/datasets/grammar_dataset/gtrain_10k.csv" --test_split "/root/miniconda3/envs/llama3/lib/python3.10/site-packages/llama_recipes/datasets/grammar_dataset/grammar_validation.csv" --model_name "Meta-Llama-3-8B-Instruct-hf" --output_dir "Meta-Llama-3-8B-Instruct-hf_lora_grammar_dataset_20240605" --save_model False --use_fp16 --use_fast_kernels --one_gpu --context_length 1024
     ```
 
 ### How to run with custom datasets?
 
 In order to start a training with the custom dataset we need to set the `--dataset` as well as the `--custom_dataset.file` parameter.
 
-```python
-python -m llama_recipes.finetuning --dataset "custom_dataset" --custom_dataset.file "path/to/custom_dataset.py"
+```bash
+torchrun --nnodes 1 -m llama_recipes.finetuning --dataset "custom_dataset" --custom_dataset.file "path/to/custom_dataset.py" --train_split ${path_to_train_split} --test_split ${path_to_test_split}
 ```
 
 e.g.
@@ -176,13 +175,13 @@ e.g.
 ```bash
 # custom_dataset
 
-torchrun --nnodes 1 -m llama_recipes.finetuning --use_peft --peft_method lora --quantization --dataset "custom_dataset" --custom_dataset.file "../fine-tuning/custom_dataset.py" --model_name "Meta-Llama-3-8B-Instruct-hf" --output_dir "Meta-Llama-3-8B-Instruct-hf_lora_custom_dataset_20240605" --save_model False --use_fp16 --use_fast_kernels --one_gpu --context_length 1024
+torchrun --nnodes 1 -m llama_recipes.finetuning --use_peft --peft_method lora --quantization --dataset "custom_dataset" --custom_dataset.file "../fine-tuning/custom_dataset.py" --model_name "Meta-Llama-3-8B-Instruct-hf" --output_dir "Meta-Llama-3-8B-Instruct-hflora-custom-dataset-2024060x" --save_model False --use_fp16 --use_fast_kernels --one_gpu --context_length 1024
 ```
 
 ```bash
 # sentiment_dataset
 
-torchrun --nnodes 1 -m llama_recipes.finetuning --use_peft --peft_method lora --quantization --dataset "custom_dataset" --custom_dataset.file "../fine-tuning/custom_dataset.py" --train_split "../fine-tuning/sentiment_train.csv" --test_split "../fine-tuning/sentiment_validation.csv" --model_name "Meta-Llama-3-8B-Instruct-hf" --output_dir "Meta-Llama-3-8B-Instruct-hf_lora_sentiment_dataset_20240605" --save_model False --use_fp16 --use_fast_kernels --one_gpu --context_length 1024
+torchrun --nnodes 1 -m llama_recipes.finetuning --use_peft --peft_method lora --quantization --dataset "custom_dataset" --custom_dataset.file "../fine-tuning/custom_dataset.py" --train_split "../fine-tuning/datasets/sentiment_train.csv" --test_split "../fine-tuning/datasets/sentiment_validation.csv" --model_name "Meta-Llama-3-8B-Instruct-hf" --output_dir "../fine-tuning/pefe-model/Meta-Llama-3-8B-Instruct-hf-lora-sentiment-dataset-20240606" --use_fp16 --use_fast_kernels --one_gpu --context_length 1024 --num_epochs 30
 ```
 
 > [!TIP]
@@ -225,7 +224,7 @@ Currently 3 open source datasets are supported that can be found in [Datasets co
     torchrun --nnodes 1 --nproc_per_node 2 -m llama_recipes.finetuning --enable_fsdp --model_name "Meta-Llama-3-8B-Instruct-hf" --use_peft --peft_method lora --dataset grammar_dataset --train_split "/root/miniconda3/envs/llama3/lib/python3.10/site-packages/llama_recipes/datasets/grammar_dataset/gtrain_10k.csv" --test_split "/root/miniconda3/envs/llama3/lib/python3.10/site-packages/llama_recipes/datasets/grammar_dataset/grammar_validation.csv" --dist_checkpoint_root_folder "model_checkpoints" --dist_checkpoint_folder "fine-tuned" --use_fast_kernels --output_dir "Meta-Llama-3-8B-Instruct-hf_lora_grammer_dataset_20240523" --context_length 1024 --num_epochs 10
     ```
 
-### How to run with custom datasets?
+### How to run with custom datasets? (TBD)
 
 In order to start a training with the custom dataset we need to set the `--dataset` as well as the `--custom_dataset.file` parameter.
 
@@ -244,5 +243,5 @@ torchrun --nnodes 1 --nproc_per_node 2 -m llama_recipes.finetuning --enable_fsdp
 ```bash
 # sentiment_dataset
 
-torchrun --nnodes 1 --nproc_per_node 2 -m llama_recipes.finetuning --enable_fsdp --use_peft --peft_method lora --quantization --dataset "custom_dataset" --custom_dataset.file "../fine-tuning/custom_dataset.py" --train_split "../fine-tuning/sentiment_train.csv" --test_split "../fine-tuning/sentiment_validation.csv" --model_name "Meta-Llama-3-8B-Instruct-hf" --output_dir "Meta-Llama-3-8B-Instruct-hf_lora_sentiment_dataset_20240605" --dist_checkpoint_root_folder "model_checkpoints" --dist_checkpoint_folder "fine-tuned" --use_fast_kernels --save_model False --use_fast_kernels --context_length 1024
+torchrun --nnodes 1 -m llama_recipes.finetuning --use_peft --peft_method lora --dataset "custom_dataset" --custom_dataset.file "../fine-tuning/custom_dataset.py" --train_split "../fine-tuning/sentiment_train.csv" --test_split "../fine-tuning/sentiment_validation.csv" --model_name "Meta-Llama-3-8B-Instruct-hf" --output_dir "Meta-Llama-3-8B-Instruct-hf_lora_sentiment_dataset_20240605" --save_model False --pure_bf16 --use_fast_kernels --context_length 1024 --num_epochs 30
 ```

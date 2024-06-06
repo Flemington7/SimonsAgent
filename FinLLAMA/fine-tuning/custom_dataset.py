@@ -10,11 +10,11 @@ from torch.utils.data import Dataset
 class CustomDataset(Dataset):
     def __init__(self, tokenizer, csv_name=None):
         try:
-            # load dataset
-            self.dataset = load_dataset('csv', data_files = csv_name)
+            # load dataset and clear cache
+            self.dataset = load_dataset('csv', data_files = csv_name, download_mode="force_redownload")
 
             # map label to integer
-            label_map = {"neutral": 0, "negative": 1, "positive": 2}
+            label_map = {"neutral": 0, "negative": -1, "positive": 1}
             self.dataset = self.dataset.map(lambda x: {"label": label_map[x["label"]], "text": x["text"]})
         except Exception as e:
             print("Loading of custom dataset failed!")
@@ -46,5 +46,4 @@ def get_custom_dataset(dataset_config, tokenizer, csv_name=None):
         csv_name=csv_name,
     )
 
-    print(dataset[0])
     return dataset

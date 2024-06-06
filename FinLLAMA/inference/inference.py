@@ -7,7 +7,6 @@ import fire
 import os
 import sys
 import time
-import gradio as gr
 
 import torch
 from transformers import AutoTokenizer
@@ -129,36 +128,7 @@ def main(
       user_prompt = "\n".join(sys.stdin.readlines())
       inference(user_prompt, temperature, top_p, top_k, max_new_tokens)
   else:
-      gr.Interface(
-        fn=inference,
-        inputs=[
-            gr.components.Textbox(
-                lines=9,
-                label="User Prompt",
-                placeholder="none",
-            ),
-            gr.components.Slider(
-                minimum=0, maximum=1, value=1.0, label="Temperature"
-            ),
-            gr.components.Slider(
-                minimum=0, maximum=1, value=1.0, label="Top p"
-            ),
-            gr.components.Slider(
-                minimum=0, maximum=100, step=1, value=50, label="Top k"
-            ),
-            gr.components.Slider(
-                minimum=1, maximum=2000, step=1, value=200, label="Max tokens"
-            ),
-        ],
-        outputs=[
-            gr.components.Textbox(
-                lines=5,
-                label="Output",
-            )
-        ],
-        title="Meta Llama3 Playground",
-        description="https://github.com/facebookresearch/llama-recipes",
-      ).queue().launch(server_name="0.0.0.0", share=True)
+      print("prompt_file or stdin should be provided")
 
 if __name__ == "__main__":
     fire.Fire(main)

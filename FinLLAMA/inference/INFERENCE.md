@@ -6,15 +6,26 @@ Additionally, a prompt for the model in the form of a text file has to be provid
 
 Examples:
 
- ```bash
+```bash
 # PEFT method
 
-python inference.py --model_name <training_config.model_name> --peft_model <training_config.output_dir> --use_auditnlg
+cat <test_prompt_file> | python inference.py --model_name <training_config.model_name> --peft_model <training_config.output_dir> --use_auditnlg
+```
+
+```bash
 # prompt as parameter
 
 python inference.py --model_name <training_config.output_dir> --prompt_file <test_prompt_file> --use_auditnlg
- ```
+```
+
+e.g.:
+
+```bash
+cat ../inference/financial_sentiment_prompt.txt | python ../inference/inference.py --model_name "Meta-Llama-3-8B-Instruct-hf" --use_auditnlg --peft_model "../fine-tuning/pefe-model/Meta-Llama-3-8B-Instruct-hf-lora-sentiment-dataset-20240606"
+```
+
 The  folder contains test prompts for summarization use-case:
+
 ```
 samsum_prompt.txt
 ...
