@@ -32,7 +32,7 @@ class CustomDataset(Dataset):
         sample = {
             "input_ids": input_ids,
             "attention_mask": [1] * len(input_ids),
-            "label": example_batch["label"]
+            "label": example_batch["label"] # TODO: make sure this can be executed
         }
 
         return sample
