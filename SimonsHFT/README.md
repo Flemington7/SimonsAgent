@@ -13,11 +13,10 @@ The `SimonsHFT` is a nested decision execution workflow designed to support high
   - [Installation](#installation)
   - [Data Preparation](#data-preparation)
 - [Running the Workflow](#running-the-workflow)
-  - [Information Extractor](#information-extractor-tbd)
+  - [Information Extractor](#information-extractor)
   - [Training the Model](#training-the-model-tbd)
-    - [Custom Model Training](#custom-model-training-tbd)
     - [Run example model](#run-example-model)
-  - [Decision Generator](#decision-generator-tbd)
+  - [Decision Generator](#decision-generator)
   - [Backtesting](#backtesting)
     - [Weekly Portfolio Generation and Daily Order Execution](#weekly-portfolio-generation-and-daily-order-execution)
     - [Daily Portfolio Generation and Minutely Order Execution](#daily-portfolio-generation-and-minutely-order-execution)
@@ -43,7 +42,7 @@ The trading algorithm generates decisions based on forecast signals, which are t
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/your-repo/comprehensive-hft.git
+    git clone https://github.com/Flemington7/SimonsAgent.git
     cd SimonsHFT
     ```
 
@@ -55,24 +54,19 @@ The trading algorithm generates decisions based on forecast signals, which are t
 
 ### Data Preparation
 
-1. **Financial Data**: Download and prepare the financial data as required by Qlib. Follow the Qlib documentation for setting up data. As mentioned before, we will integrate the sentiment data with the financial data, and convert it into a format that suitable for backtesting. 
+- **Financial Data**: Download and prepare the financial data as required by Qlib. If you want to use the default data, you can download the data from the [Qlib documentation](https://qlib.readthedocs.io/en/latest/start/initialization.html). If you want to use custom data, you can follow the [data collector](data_collector/README.md) for setting up data. As mentioned before, we will integrate the sentiment data with the financial data, and convert it into a format that suitable for backtesting. 
 
 ## Running the Workflow
 
 ![Framework](framework.svg)
 
-### Information Extractor (TBD)
+### Information Extractor
 
-As mentioned above, the `SimonsHFT` framework integrates advanced sentiment analysis using FinLLAMA. By incorporating real-time sentiment data from news and social media, we aim to enhance the decision-making process and profitability in volatile stock markets. We plan to use the FinLLAMA model to extract and analyze financial sentiments from news and social media and convert these Textual data into numerical data for further analysis.
-
-(It will be one of the most important parts of the `SimonsHFT` framework!)
+As mentioned above, the `SimonsHFT` framework integrates advanced sentiment analysis using FinLLAMA. By incorporating real-time sentiment data from news and social media, we aim to enhance the decision-making process and profitability in volatile stock markets. We plan to use the FinLLAMA model to extract and analyze financial sentiments from news and social media and convert these textual data into numerical data for further analysis.
 
 ### Training the Model (TBD)
 
-An increasing number of SOTA Quant research works/papers, which focus on building forecasting models to mine valuable signals/patterns in complex financial data, are released in `Qlib`. All these models are runnable with Qlib. Users can find the config files they provide and some details about the model through the [benchmarks](examples/benchmarks) folder. More information can be retrieved at the model files listed above.
-
-### Custom Model Training (TBD)
-(It will be one of the most important parts of the `SimonsHFT` framework! Please refer to this [link](#https://qlib.readthedocs.io/en/latest/start/integration.html) for more details!)
+An increasing number of SOTA Quant research works/papers, which focus on building forecasting models to mine valuable signals/patterns in complex financial data, are released in `Qlib`. All these models are runnable with Qlib. Users can find the config files they provide and some details about the model through the [benchmarks](examples/benchmarks) folder. More information can be retrieved at the qlib [documentation](https://qlib.readthedocs.io/en/latest/start/integration.html).
 
 #### Run example model
 
@@ -99,17 +93,57 @@ python run_all_model.py run 10
 
 It also provides the API to run specific models at once. For more use cases, please refer to the file's [docstrings](examples/run_all_model.py). 
 
-### Decision Generator (TBD)
+### Decision Generator
 
-In `examples/benchmarks` we have various **alpha** models that predict the stock returns. We also use a simple rule based `TopkDropoutStrategy` to evaluate the investing performance of these models. However, such a strategy is too simple to control the portfolio risk like correlation and volatility. To this end, an optimization based strategy should be used to for the trade-off between return and risk. Please refer to the [Portfolio Optimization Strategy](examples/portfolio/README.md) for more details.
+Besides backtesting, the optimization of strategies from different levels is not standalone and can be affected by each other. For example, the best portfolio management strategy may change with the performance of order executions (e.g. a portfolio with higher turnover may become a better choice when we improve the order execution strategies). To achieve overall good performance, it is necessary to consider the interaction of strategies at a different levels.
+
+Therefore, building a new framework for trading on multiple levels becomes necessary to solve the various problems mentioned above, for which we designed a nested decision execution framework that considers the interaction of strategies.
+
+#### Base Strategy
+
+Qlib provides a base class qlib.strategy.base.BaseStrategy. All strategy classes need to inherit the base class and implement its interface. Users can inherit BaseStrategy to customize their strategy class.
+
+- generate_trade_decision
+
+    generate_trade_decision is a key interface that generates trade decisions in each trading bar. The frequency to call this method depends on the executor frequency(“time_per_step”=”day” by default). But the trading frequency can be decided by users’ implementation. For example, if the user wants to trading in weekly while the time_per_step is “day” in executor, user can return non-empty TradeDecision weekly(otherwise return empty like [this](https://github.com/microsoft/qlib/blob/main/qlib/contrib/strategy/signal_strategy.py#L138) ).
+
+After users specifying the models(forecasting signals) and strategies, running backtest will help users to check the performance of a custom model(forecasting signals)/strategy.
+
+#### Implemented Strategy
+
+Qlib provides several implemented portfolio strategies.
+- portfolio/signal strategy: `TopkDropoutStrategy`, `WeightStrategyBase`, `EnhancedIndexingStrategy`. Portfolio strategy is designed to adopt different portfolio strategies, which means that users can adopt different algorithms to generate investment portfolios based on the prediction scores of the forecasting model.
+
+- order execution/rule strategy: `TWAPStrategy` (Time Weighted Average Price Strategy), `SBBStrategyBase` (Select the Better Bar Strategy), `SBBStrategyEMA` (Select the Better Bar Strategy with Exponential Moving Average Signal), which are using for the order execution, so it have no association with the forecasting signals.
+
+##### TopkDropoutStrategy
+
+In `examples/benchmarks` we have various **alpha** models that predict the stock returns. We also use a simple rule based `TopkDropoutStrategy` to evaluate the investing performance of these models. TopkDropoutStrategy is a subclass of BaseStrategy and implement the interface generate_order_list whose process is as follows.
+
+- Adopt the Topk-Drop algorithm to calculate the target amount of each stock.
+    There are two parameters for the Topk-Drop algorithm:
+
+    - Topk: The number of stocks held
+    
+    - Drop: The number of stocks sold on each trading day
+    
+    In general, the number of stocks currently held is Topk, with the exception of being zero at the beginning period of trading. For each trading day, let $d$ be the number of the instruments currently held and with a rank $K$ when ranked by the prediction scores from high to low. Then $d$ number of stocks currently held with the worst prediction score will be sold, and the same number of unheld stocks with the best prediction score will be bought.
+    
+    In general, $d=$`Drop`, especially when the pool of the candidate instruments is large, $K$ is large, and Drop is small.
+    
+    In most cases, TopkDrop algorithm sells and buys Drop stocks every trading day, which yields a turnover rate of $2*$`Drop`/$K$.
+    
+    The following images illustrate a typical scenario.
+    ![TopkDropoutStrategy](topk_drop.webp)
+- Generate the order list from the target amount
 
 ### Backtesting
 
-This [workflow](#workflow.py) is an example for nested decision execution in backtesting. Qlib supports nested decision execution in backtesting. It means that users can use different strategies to make trade decision in different frequencies.
+This [workflow](workflow.py) is an example for nested decision execution in backtesting. Qlib supports nested decision execution in backtesting. It means that users can use different strategies to make trade decision in different frequencies.
 
-#### Weekly Portfolio Generation and Daily Order Execution
+#### Daily Portfolio Generation and Minutely Order Execution
 
-This [workflow](#workflow.py) provides an example that uses a DropoutTopkStrategy (a strategy based on the daily frequency Lightgbm model) in weekly frequency for portfolio generation and uses SBBStrategyEMA (a rule-based strategy that uses EMA for decision-making) to execute orders in daily frequency. 
+This [workflow](workflow.py) provides an example that uses a DropoutTopkStrategy (a strategy based on the daily frequency Lightgbm model) in weekly frequency for portfolio generation and uses `SBBStrategyEMA` (a rule-based strategy that uses EMA for decision-making) to execute orders in minutely frequency, besides, we also use the `TWAPStrategy` (Time Weighted Average Price Strategy for order execution) to execute orders in 5 minutely frequency.
 
 Start backtesting by running the following command:
 
@@ -117,7 +151,7 @@ Start backtesting by running the following command:
 python workflow.py backtest
 ```
 
-After running the [workflow](#workflow.py), you will see the following output like this (at this time, we run the weekly portfolio generation and minutely order execution):
+After running the [workflow](workflow.py), you will see the following output like this (at this time, we run the weekly portfolio generation and minutely order execution):
 
 ```bash
 [21830:MainThread](2024-05-30 21:35:06,100) INFO - qlib.workflow - [record_temp.py:515] - Portfolio analysis record 'port_analysis_1day.pkl' has been saved as the artifact of the Experiment 1
@@ -150,14 +184,3 @@ pa   0.000476
 pos  0.562500
 [21830:MainThread](2024-05-30 21:35:06,708) INFO - qlib.timer - [log.py:127] - Time cost: 0.000s | waiting `async_log` Done
 ```
-
-#### Daily Portfolio Generation and Minutely Order Execution
-
-This [workflow](#workflow.py) also provides a high-frequency example that uses a DropoutTopkStrategy for portfolio generation in daily frequency and uses SBBStrategyEMA to execute orders in minutely frequency. 
-
-Start backtesting by running the following command:
-```bash
-python workflow.py backtest_highfreq
-```
-
-
