@@ -17,8 +17,10 @@ The `SimonsHFT` is a nested decision execution workflow designed to support high
   - [Training the Model](#training-the-model-tbd)
     - [Run example model](#run-example-model)
   - [Decision Generator](#decision-generator)
+    - [Base Strategy](#base-strategy)
+    - [Implemented Strategy](#implemented-strategy)
+      - [TopkDropoutStrategy](#topkdropoutstrategy)
   - [Backtesting](#backtesting)
-    - [Weekly Portfolio Generation and Daily Order Execution](#weekly-portfolio-generation-and-daily-order-execution)
     - [Daily Portfolio Generation and Minutely Order Execution](#daily-portfolio-generation-and-minutely-order-execution)
 
 

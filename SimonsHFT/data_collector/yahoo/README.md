@@ -85,7 +85,7 @@ pip install -r requirements.txt
         python collector.py normalize_data --qlib_data_1d_dir ~/.qlib/qlib_data/cn_data --source_dir ~/.qlib/stock_data/source/cn_data_1min --normalize_dir ~/.qlib/stock_data/source/cn_1min_nor --region CN --interval 1min
 
         # normalize 1d us
-        python collector.py normalize_data --source_dir /root/onethingai-tmp/.qlib/stock_data/source/us_data --normalize_dir /root/onethingai-tmp/.qlib/stock_data/source/br_1d_nor --region US --interval 1d
+        python collector.py normalize_data --source_dir /root/onethingai-tmp/.qlib/stock_data/source/us_data --normalize_dir /root/onethingai-tmp/.qlib/stock_data/source/us_1d_nor --region US --interval 1d
 
         # normalize 1min us
         python collector.py normalize_data --qlib_data_1d_dir /root/onethingai-tmp/.qlib/qlib_data/us_data --source_dir /root/onethingai-tmp/.qlib/stock_data/source/us_data_1min --normalize_dir /root/onethingai-tmp/.qlib/stock_data/source/us_1min_nor --region US --interval 1min
@@ -101,7 +101,7 @@ pip install -r requirements.txt
          > `freq_map = {1d:day, 1mih: 1min}`
        - `max_workers`: number of threads, by default *16*
        - `include_fields`: dump fields, by default `""`
-       - `exclude_fields`: fields not dumped, by default `"""
+       - `exclude_fields`: fields not dumped, by default `""`
          > dump_fields = `include_fields if include_fields else set(symbol_df.columns) - set(exclude_fields) exclude_fields else symbol_df.columns`
        - `symbol_field_name`: column *name* identifying symbol in csv files, by default `symbol`
        - `date_field_name`: column *name* identifying time in csv files, by default `date`
