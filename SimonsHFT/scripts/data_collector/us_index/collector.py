@@ -32,6 +32,13 @@ WIKI_INDEX_NAME_MAP = {
     "DJIA": "Dow_Jones_Industrial_Average",
 }
 
+# set the proxy
+headers = {'User-Agent': 'Mozilla/5.0'}
+
+proxies = {
+    'http': 'socks5://127.0.0.1:1080',
+    'https': 'socks5://127.0.0.1:1080',
+}
 
 class WIKIIndex(IndexBase):
     # NOTE: The US stock code contains "PRN", and the directory cannot be created on Windows system, use the "_" prefix
@@ -106,13 +113,13 @@ class WIKIIndex(IndexBase):
             calendar list
         """
         _calendar_list = getattr(self, "_calendar_list", None)
-        if _calendar_list is None:
-            _calendar_list = list(filter(lambda x: x >= self.bench_start_date, get_calendar_list("US_ALL")))
+        if (_calendar_list is None):
+            _calendar_list = list(filter(lambda x: x >= self.bench_start_date.tz_localize(None), get_calendar_list("US_ALL")))
             setattr(self, "_calendar_list", _calendar_list)
         return _calendar_list
 
     def _request_new_companies(self) -> requests.Response:
-        resp = requests.get(self._target_url, timeout=None)
+        resp = requests.get(self._target_url, headers=headers, proxies=proxies, timeout=None)
         if resp.status_code != 200:
             raise ValueError(f"request error: {self._target_url}")
 
@@ -197,7 +204,6 @@ class NASDAQ100Index(WIKIIndex):
     def get_changes(self):
         return self.get_changes_with_history_companies(self.get_history_companies())
 
-
 class DJIAIndex(WIKIIndex):
     @property
     def bench_start_date(self) -> pd.Timestamp:
@@ -226,7 +232,9 @@ class SP500Index(WIKIIndex):
     def get_changes(self) -> pd.DataFrame:
         logger.info(f"get sp500 history changes......")
         # NOTE: may update the index of the table
-        changes_df = pd.read_html(self.WIKISP500_CHANGES_URL)[-1]
+        response = requests.get(self.WIKISP500_CHANGES_URL, headers=headers, proxies=proxies, timeout=None)
+        response.raise_for_status()
+        changes_df = pd.read_html(response.text)[-1]
         changes_df = changes_df.iloc[:, [0, 1, 3]]
         changes_df.columns = [self.DATE_FIELD_NAME, self.ADD, self.REMOVE]
         changes_df[self.DATE_FIELD_NAME] = pd.to_datetime(changes_df[self.DATE_FIELD_NAME])
