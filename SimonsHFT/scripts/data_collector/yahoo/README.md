@@ -21,7 +21,7 @@ pip install -r requirements.txt
 ### Collector *YahooFinance* data to qlib
 > collector *YahooFinance* data and *dump* into `qlib` format.
 > If the above ready-made data can't meet users' requirements,  users can follow this section to crawl the latest data and convert it to qlib-data.
-  1. download data to csv: `python data_collector/yahoo/collector.py download_data`
+  1. download data to csv: `python scripts/data_collector/yahoo/collector.py download_data`
      
      This will download the raw data such as high, low, open, close, adjclose price from yahoo to a local directory. One file per symbol.
 
@@ -29,7 +29,7 @@ pip install -r requirements.txt
           - `source_dir`: save the directory
           - `interval`: `1d` or `1min`, by default `1d`
             > **due to the limitation of the *YahooFinance API*, only the last month's data is available in `1min`**
-          - `region`: `CN` or `US` or `IN` or `BR`, by default `CN`
+          - `region`: `CN` or `US`, by default `CN`
           - `delay`: `time.sleep(delay)`, by default *0.5*
           - `start`: start datetime, by default *"2000-01-01"*; *closed interval(including start)*
           - `end`: end datetime, by default `pd.Timestamp(datetime.datetime.now() + pd.Timedelta(days=1))`; *open interval(excluding end)*
@@ -49,7 +49,7 @@ pip install -r requirements.txt
           # us 1min data
           python collector.py download_data --source_dir /root/onethingai-tmp/.qlib/stock_data/source/us_data_1min --start 2024-01-01 --end 2024-06-13 --delay 1 --interval 1min --region US
           ```
-  2. normalize data: `python data_collector/yahoo/collector.py normalize_data`
+  2. normalize data: `python scripts/data_collector/yahoo/collector.py normalize_data`
      
      This will:
      1. Normalize high, low, close, open price using adjclose.
@@ -61,7 +61,7 @@ pip install -r requirements.txt
           - `max_workers`: number of concurrent, by default *1*
           - `interval`: `1d` or `1min`, by default `1d`
             > if **`interval == 1min`**, `qlib_data_1d_dir` cannot be `None`
-          - `region`: `CN` or `US` or `IN`, by default `CN`
+          - `region`: `CN` or `US`, by default `CN`
           - `date_field_name`: column *name* identifying time in csv files, by default `date`
           - `symbol_field_name`: column *name* identifying symbol in csv files, by default `symbol`
           - `end_date`: if not `None`, normalize the last date saved (*including end_date*); if `None`, it will ignore this parameter; by default `None`
@@ -90,7 +90,9 @@ pip install -r requirements.txt
         # normalize 1min us
         python collector.py normalize_data --qlib_data_1d_dir /root/onethingai-tmp/.qlib/qlib_data/us_data --source_dir /root/onethingai-tmp/.qlib/stock_data/source/us_data_1min --normalize_dir /root/onethingai-tmp/.qlib/stock_data/source/us_1min_nor --region US --interval 1min
         ```
-  3. dump data: `python data_collector/dump_bin.py dump_all`
+    > [!NOTE]: There are some data flawed in the YahooFinance data, such as the data of the first trading day is missing. The normalization process will report an error. Users can manually modify the data or delete the csv file. We remove the flawed data to the directory `/root/onethingai-tmp/.qlib/stock_data/source/us_data/flawed_data`.
+
+  3. dump data: `python scripts/dump_bin.py dump_all`
     
      This will convert the normalized csv in `feature` directory as numpy array and store the normalized data one file per column and one symbol per directory. 
     
@@ -98,7 +100,7 @@ pip install -r requirements.txt
        - `csv_path`: stock data path or directory, **normalize result(normalize_dir)**
        - `qlib_dir`: qlib(dump) data director
        - `freq`: transaction frequency, by default `day`
-         > `freq_map = {1d:day, 1mih: 1min}`
+         > `freq_map = {1d:day, 1min: 1min}`
        - `max_workers`: number of threads, by default *16*
        - `include_fields`: dump fields, by default `""`
        - `exclude_fields`: fields not dumped, by default `""`
@@ -107,16 +109,19 @@ pip install -r requirements.txt
        - `date_field_name`: column *name* identifying time in csv files, by default `date`
      - examples:
        ```bash
+
        # dump 1d us
        python dump_bin.py dump_all --csv_path /root/onethingai-tmp/.qlib/stock_data/source/us_1d_nor --qlib_dir /root/onethingai-tmp/.qlib/qlib_data/us_data --freq day --exclude_fields date,symbol
+       
        # dump 1min us
        python dump_bin.py dump_all --csv_path /root/onethingai-tmp/.qlib/stock_data/source/us_1min_nor --qlib_dir /root/onethingai-tmp/.qlib/qlib_data/us_data_1min --freq 1min --exclude_fields date,symbol
        ```
+    > [!NOTE]: After the us stock data is dumped, you may meet the following error: `AttributeError: 'float' object has no attribute 'lower'`. This is because the symbol `NA` and `NAN` are flawed. You can manually delete theses symbols the `all.txt` file in the directory `/root/onethingai-tmp/.qlib/qlib_data/instruments`.
 
 ### Automatic update of daily frequency data(from yahoo finance)
   > It is recommended that users update the data manually once (--trading_date 2021-05-25) and then set it to update automatically.
   >
-  > **NOTE**: Users can't incrementally  update data based on the offline data provided by Qlib(some fields are removed to reduce the data size). Users should use [yahoo collector](https://github.com/microsoft/qlib/tree/main/scripts/data_collector/yahoo#automatic-update-of-daily-frequency-datafrom-yahoo-finance) to download Yahoo data from scratch and then incrementally update it.
+  > [!NOTE]: Users can't incrementally  update data based on the offline data provided by Qlib(some fields are removed to reduce the data size). Users should use [yahoo collector](https://github.com/microsoft/qlib/tree/main/scripts/data_collector/yahoo#automatic-update-of-daily-frequency-datafrom-yahoo-finance) to download Yahoo data from scratch and then incrementally update it.
   > 
 
   * Automatic update of data to the "qlib" directory each trading day(Linux)

@@ -36,8 +36,6 @@ from data_collector.utils import (
     get_calendar_list,
     get_hs_stock_symbols,
     get_us_stock_symbols,
-    get_in_stock_symbols,
-    get_br_stock_symbols,
     generate_minutes_calendar_from_daily,
     calc_adjusted_price,
 )
@@ -291,79 +289,6 @@ class YahooCollectorUS1min(YahooCollectorUS):
     pass
 
 
-class YahooCollectorIN(YahooCollector, ABC):
-    def get_instrument_list(self):
-        logger.info("get INDIA stock symbols......")
-        symbols = get_in_stock_symbols()
-        logger.info(f"get {len(symbols)} symbols.")
-        return symbols
-
-    def download_index_data(self):
-        pass
-
-    def normalize_symbol(self, symbol):
-        return code_to_fname(symbol).upper()
-
-    @property
-    def _timezone(self):
-        return "Asia/Kolkata"
-
-
-class YahooCollectorIN1d(YahooCollectorIN):
-    pass
-
-
-class YahooCollectorIN1min(YahooCollectorIN):
-    pass
-
-
-class YahooCollectorBR(YahooCollector, ABC):
-    def retry(cls):  # pylint: disable=E0213
-        """
-        The reason to use retry=2 is due to the fact that
-        Yahoo Finance unfortunately does not keep track of some
-        Brazilian stocks.
-
-        Therefore, the decorator deco_retry with retry argument
-        set to 5 will keep trying to get the stock data up to 5 times,
-        which makes the code to download Brazilians stocks very slow.
-
-        In future, this may change, but for now
-        I suggest to leave retry argument to 1 or 2 in
-        order to improve download speed.
-
-        To achieve this goal an abstract attribute (retry)
-        was added into YahooCollectorBR base class
-        """
-        raise NotImplementedError
-
-    def get_instrument_list(self):
-        logger.info("get BR stock symbols......")
-        symbols = get_br_stock_symbols() + [
-            "^BVSP",
-        ]
-        logger.info(f"get {len(symbols)} symbols.")
-        return symbols
-
-    def download_index_data(self):
-        pass
-
-    def normalize_symbol(self, symbol):
-        return code_to_fname(symbol).upper()
-
-    @property
-    def _timezone(self):
-        return "Brazil/East"
-
-
-class YahooCollectorBR1d(YahooCollectorBR):
-    retry = 2
-
-
-class YahooCollectorBR1min(YahooCollectorBR):
-    retry = 2
-
-
 class YahooNormalize(BaseNormalize):
     COLUMNS = ["open", "close", "high", "low", "volume"]
     DAILY_FORMAT = "%Y-%m-%d"
@@ -380,61 +305,71 @@ class YahooNormalize(BaseNormalize):
 
     @staticmethod
     def normalize_yahoo(
-        df: pd.DataFrame,
-        calendar_list: list = None,
-        date_field_name: str = "date",
-        symbol_field_name: str = "symbol",
-        last_close: float = None,
+    df: pd.DataFrame,
+    calendar_list: list = None,
+    date_field_name: str = "date",
+    symbol_field_name: str = "symbol",
+    last_close: float = None,
     ):
-        if df.empty:
-            return df
-        symbol = df.loc[df[symbol_field_name].first_valid_index(), symbol_field_name]
-        columns = copy.deepcopy(YahooNormalize.COLUMNS)
-        df = df.copy()
-        df.set_index(date_field_name, inplace=True)
-        df.index = pd.to_datetime(df.index)
-        df.index = df.index.tz_localize(None)
-        df = df[~df.index.duplicated(keep="first")]
-        if calendar_list is not None:
-            df = df.reindex(
-                pd.DataFrame(index=calendar_list)
-                .loc[
-                    pd.Timestamp(df.index.min()).date() : pd.Timestamp(df.index.max()).date()
-                    + pd.Timedelta(hours=23, minutes=59)
-                ]
-                .index
-            )
-        df.sort_index(inplace=True)
-        df.loc[(df["volume"] <= 0) | np.isnan(df["volume"]), list(set(df.columns) - {symbol_field_name})] = np.nan
+        try:
+            if df.empty:
+                return df
 
-        change_series = YahooNormalize.calc_change(df, last_close)
-        # NOTE: The data obtained by Yahoo finance sometimes has exceptions
-        # WARNING: If it is normal for a `symbol(exchange)` to differ by a factor of *89* to *111* for consecutive trading days,
-        # WARNING: the logic in the following line needs to be modified
-        _count = 0
-        while True:
-            # NOTE: may appear unusual for many days in a row
-            change_series = YahooNormalize.calc_change(df, last_close)
-            _mask = (change_series >= 89) & (change_series <= 111)
-            if not _mask.any():
-                break
-            _tmp_cols = ["high", "close", "low", "open", "adjclose"]
-            df.loc[_mask, _tmp_cols] = df.loc[_mask, _tmp_cols] / 100
-            _count += 1
-            if _count >= 10:
-                _symbol = df.loc[df[symbol_field_name].first_valid_index()]["symbol"]
-                logger.warning(
-                    f"{_symbol} `change` is abnormal for {_count} consecutive days, please check the specific data file carefully"
+            symbol = df.loc[df[symbol_field_name].first_valid_index(), symbol_field_name]
+            columns = copy.deepcopy(YahooNormalize.COLUMNS)
+            df = df.copy()
+            df.set_index(date_field_name, inplace=True)
+            df.index = pd.to_datetime(df.index)
+            df.index = df.index.tz_localize(None)
+            df = df[~df.index.duplicated(keep="first")]
+
+            if calendar_list is not None:
+                df = df.reindex(
+                    pd.DataFrame(index=calendar_list)
+                    .loc[
+                        pd.Timestamp(df.index.min()).date() : pd.Timestamp(df.index.max()).date()
+                        + pd.Timedelta(hours=23, minutes=59)
+                    ]
+                    .index
                 )
+            
+            df.sort_index(inplace=True)
+            df.loc[(df["volume"] <= 0) | np.isnan(df["volume"]), list(set(df.columns) - {symbol_field_name})] = np.nan
 
-        df["change"] = YahooNormalize.calc_change(df, last_close)
+            change_series = YahooNormalize.calc_change(df, last_close)
+            # NOTE: The data obtained by Yahoo finance sometimes has exceptions
+            # WARNING: If it is normal for a `symbol(exchange)` to differ by a factor of *89* to *111* for consecutive trading days,
+            # WARNING: the logic in the following line needs to be modified
+            _count = 0
+            while True:
+                # NOTE: may appear unusual for many days in a row
+                change_series = YahooNormalize.calc_change(df, last_close)
+                _mask = (change_series >= 89) & (change_series <= 111)
+                if not _mask.any():
+                    break
+                _tmp_cols = ["high", "close", "low", "open", "adjclose"]
+                df.loc[_mask, _tmp_cols] = df.loc[_mask, _tmp_cols] / 100
+                _count += 1
+                if _count >= 10:
+                    _symbol = df.loc[df[symbol_field_name].first_valid_index()]["symbol"]
+                    logger.warning(
+                        f"{_symbol} `change` is abnormal for {_count} consecutive days, please check the specific data file carefully"
+                    )
 
-        columns += ["change"]
-        df.loc[(df["volume"] <= 0) | np.isnan(df["volume"]), columns] = np.nan
+            df["change"] = YahooNormalize.calc_change(df, last_close)
 
-        df[symbol_field_name] = symbol
-        df.index.names = [date_field_name]
-        return df.reset_index()
+            columns += ["change"]
+            df.loc[(df["volume"] <= 0) | np.isnan(df["volume"]), columns] = np.nan
+
+            df[symbol_field_name] = symbol
+            df.index.names = [date_field_name]
+
+            return df.reset_index()
+        
+        except Exception as e:
+            logger.error(f"Error in normalize_yahoo: {e}")
+            logger.error(f"Data causing error: {df}")
+            raise
 
     def normalize(self, df: pd.DataFrame) -> pd.DataFrame:
         # normalize
@@ -636,34 +571,15 @@ class YahooNormalizeUS1min(YahooNormalizeUS, YahooNormalize1min):
     CALC_PAUSED_NUM = False
 
     def _get_calendar_list(self) -> Iterable[pd.Timestamp]:
-        # TODO: support 1min
-        raise ValueError("Does not support 1min")
-
+        try:
+            return self.generate_1min_from_daily(self.calendar_list_1d)
+        
+        except Exception as e:
+            logger.error(f"Error in _get_calendar_list: {e}")
+            raise
+    
     def _get_1d_calendar_list(self):
         return get_calendar_list("US_ALL")
-
-    def symbol_to_yahoo(self, symbol):
-        return fname_to_code(symbol)
-
-
-class YahooNormalizeIN:
-    def _get_calendar_list(self) -> Iterable[pd.Timestamp]:
-        return get_calendar_list("IN_ALL")
-
-
-class YahooNormalizeIN1d(YahooNormalizeIN, YahooNormalize1d):
-    pass
-
-
-class YahooNormalizeIN1min(YahooNormalizeIN, YahooNormalize1min):
-    CALC_PAUSED_NUM = False
-
-    def _get_calendar_list(self) -> Iterable[pd.Timestamp]:
-        # TODO: support 1min
-        raise ValueError("Does not support 1min")
-
-    def _get_1d_calendar_list(self):
-        return get_calendar_list("IN_ALL")
 
     def symbol_to_yahoo(self, symbol):
         return fname_to_code(symbol)
@@ -699,29 +615,6 @@ class YahooNormalizeCN1min(YahooNormalizeCN, YahooNormalize1min):
 
     def _get_1d_calendar_list(self) -> Iterable[pd.Timestamp]:
         return get_calendar_list("ALL")
-
-
-class YahooNormalizeBR:
-    def _get_calendar_list(self) -> Iterable[pd.Timestamp]:
-        return get_calendar_list("BR_ALL")
-
-
-class YahooNormalizeBR1d(YahooNormalizeBR, YahooNormalize1d):
-    pass
-
-
-class YahooNormalizeBR1min(YahooNormalizeBR, YahooNormalize1min):
-    CALC_PAUSED_NUM = False
-
-    def _get_calendar_list(self) -> Iterable[pd.Timestamp]:
-        # TODO: support 1min
-        raise ValueError("Does not support 1min")
-
-    def _get_1d_calendar_list(self):
-        return get_calendar_list("BR_ALL")
-
-    def symbol_to_yahoo(self, symbol):
-        return fname_to_code(symbol)
 
 
 class Run(BaseRun):

@@ -162,6 +162,7 @@ cython_debug/
 qlib/
 Meta-Llama-3-8B-Instruct/
 **/reference/
+**/examples/
 todolist.md
 image.png
 proposal.pdf
