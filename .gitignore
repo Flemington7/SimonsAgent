@@ -164,8 +164,9 @@ Meta-Llama-3-8B-Instruct/
 **/reference/
 **/examples/
 todolist.md
-image.png
+*.png
 proposal.pdf
 proposal.md
 proposal.tex
-High Frequency Quantitative Trading Aided by FinLLAMA Sentiment Analysis.pptx
+*.pptx
+*.docx
