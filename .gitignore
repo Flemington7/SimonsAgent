@@ -159,14 +159,8 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-qlib/
-Meta-Llama-3-8B-Instruct/
 **/reference/
 **/examples/
-todolist.md
-*.png
-proposal.pdf
-proposal.md
-proposal.tex
+*.pdf
 *.pptx
 *.docx
