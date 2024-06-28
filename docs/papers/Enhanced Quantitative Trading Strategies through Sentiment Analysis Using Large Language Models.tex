@@ -35,11 +35,14 @@ lijd23@mails.tsinghua.edu.cn}
 \maketitle
 
 \begin{abstract}
-The stock market's significant price volatility necessitates sophisticated and adaptive trading strategies. Traditional quantitative trading strategies relying on historical market data face limitations. This project integrates sentiment analysis using large language models (LLMs) to enhance high frequency trading (HFT) strategies. By incorporating real-time sentiment analysis from news articles and social media, we aim to improve trading performance, decision-making, and overall profitability in high frequency trading.
+The stock market's significant price volatility necessitates sophisticated and adaptive trading strategies. 
+Traditional quantitative trading strategies relying on historical market data face limitations. 
+This project integrates sentiment analysis using large language models (LLMs) to enhance quantitative trading strategies. 
+By incorporating real-time sentiment analysis from news articles and social media, we aim to improve trading performance, decision-making, and overall profitability in quantitative trading.
 \end{abstract}
 
 \begin{IEEEkeywords}
-High Frequency Trading, Sentiment Analysis, Large Language Models, Stock Market, Trading Strategies
+Quantitative Finance, Sentiment Analysis, Large Language Models, Stock Market, Trading Strategies
 \end{IEEEkeywords}
 
 \section{\textbf{Introduction}}
@@ -53,72 +56,107 @@ The stock market is characterized by its significant price volatility driven by 
 Traditional strategies rely on historical data and often neglect emotional and psychological factors. These strategies struggle to incorporate unstructured data from social media and news, presenting an opportunity for enhancement through sentiment analysis.
 
 \section{\textbf{Method}}
-\subsection{\textbf{LLM Fine-Tuning Methods Based on Sentiment Data}}
+\subsection{\textbf{Overview of the Workflow}}
+
+Our project integrates sentiment analysis with traditional price-volume trading strategies to enhance Quantitative Trading Strategies.
+The workflow consists of three main components: Information Extraction, Decision Generation, and Execution. 
+The design of the workflow is illustrated in Fig. \ref{fig:workflow}.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{lora.png}
+    \includegraphics[width=0.5\textwidth]{workflow.jpg}
+    \caption{Quantitative Trading Strategies with Sentiment Analysis Workflow.}
+    \label{fig:workflow}
+\end{figure}
+
+\subsubsection{Information Extraction}
+
+This stage involves gathering and processing both textual and numerical data to generate actionable factors for trading models.
+
+\paragraph{Textual Data Processing:}
+\begin{itemize}
+    \item \textbf{Data Source:} Textual data is sourced from news articles and social media platforms such as Twitter.
+    \item \textbf{Fine-Tuning:} The collected textual data is processed using a fine-tuned large language model, Llama 3, enhanced with Low-Rank Adaptation (LoRA) to efficiently adapt to sentiment analysis tasks.
+    \item \textbf{Sentiment Scoring:} The fine-tuned Llama 3 model generates sentiment scores from the textual data, reflecting market sentiment towards various stocks or market conditions.
+    \item \textbf{Sentiment Factor:} These sentiment scores are then transformed into sentiment factors, which are used as input features for the trading model.
+\end{itemize}
+
+\paragraph{Numerical Data Processing:}
+\begin{itemize}
+    \item \textbf{Data Source:} Numerical data includes price and volume information for various stocks.
+    \item \textbf{Price-Volume Features:} Key features such as Exponential Moving Average (EMA), Volume Weighted Average Price (VWAP), and Min-Max Range are derived from the numerical data. These factors capture essential market dynamics and trends.
+\end{itemize}
+
+\paragraph{Combined Features Creation:}
+\begin{itemize}
+    \item \textbf{Integration:} Sentiment factors and price-volume features are combined to form a comprehensive set of input features for the trading model. This integrated approach allows the model to consider both market sentiment and quantitative metrics.
+\end{itemize}
+
+\subsubsection{Decision Generation}
+
+In this stage, the derived features are used to generate trading signals and manage the portfolio.
+
+\paragraph{Forecast Model:}
+\begin{itemize}
+    \item \textbf{Model Selection:} We utilize the LightGBM model, a gradient boosting framework, to forecast future price movements and generate trading signals based on the combined features.
+    \item \textbf{Stock Ranking List:} The LightGBM model ranks the stocks, indicating which stocks are likely to perform well based on the input features.
+\end{itemize}
+
+\paragraph{Portfolio Management:}
+\begin{itemize}
+    \item \textbf{Strategy Implementation:} \texttt{TopkDropoutStrategy} is used to manage the portfolio. This strategy involves buying and selling a fixed number of stocks daily based on their ranked trading signals.
+\end{itemize}
+
+\subsubsection{Execution}
+
+The final component involves executing the trading decisions generated in the previous stage.
+
+\subsection{\textbf{Information Extraction}}
+
+\subsubsection{\textbf{LLM Fine-Tuning Methods Based on Sentiment Data}}
+In our project, we leverage LoRA to fine-tune Llama 3, a state-of-the-art large language model.
+Fine-tuning improves the LLM model's performance in specific tasks, such as sentiment analysis, by adapting it to domain-specific data.
+LoRA, a parameter-efficient fine-tuning (PEFT) method, which is designed to reduce the computational cost of fine-tuning large models.
+Traditional fine-tuning of models like Llama 3 can be computationally expensive and resource-intensive. 
+LoRA addresses this challenge by freezing the pre-trained model weights and injecting trainable rank decomposition matrices into each layer of the Transformer architecture, greatly reducing the number of trainable parameters for downstream tasks, making the fine-tuning process faster and less resource-demanding.
+Despite the reduced computational load, LoRA maintains high performance in task-specific adjustments \cite{hu2021}.
+Specifically, the fine-tuning process starts by initializing the pre-trained Llama 3 model. 
+The pre-trained weights provide a solid foundation, having been trained on diverse and extensive corpus data. 
+LoRA layers are then integrated into Llama 3. 
+These layers are low-rank matrices that capture task-specific adjustments, minimizing computational costs by introducing low-rank matrices \( A \in \mathbb{R}^{d \times r} \) and \( B \in \mathbb{R}^{r \times k} \) to approximate the original weight matrix \( W \in \mathbb{R}^{d \times k} \), where \( r \) is the rank of the decomposition, and \( r \ll \min(d, k) \).
+Instead of updating all model parameters, LoRA adds the product of these matrices to the original weight matrix \( W \), as \( W' = W + A \times B \). 
+During the fine-tuning process, only the matrices \(A\) and \(B\) are trained, which significantly reduces the number of parameters to be updated, making the process more efficient, as shown in Fig. \ref{fig:lora}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.3\textwidth]{lora.png}
     \caption{The Low-rank Adaptation Method.}
     \label{fig:lora}
 \end{figure}
 
-In our project, we leverage LoRA (Low-Rank Adaptation) to fine-tune Llama 3, a state-of-the-art large language model, for sentiment analysis tasks. This approach enables the language model to accurately interpret and classify sentiments from textual data collected from news and social media. 
+\subsubsection{\textbf{Factor Generated by Sentiment Analysis}}
+Once fine-tuned, Llama 3 is integrated into our sentiment analysis pipeline. 
+The model processes textual data from news or social media, classifying sentiments accurately and efficiently. 
+The estimated sentiment value can therefore be used for generate sentiment factors, where we use explonantial weighted moving average to account for the time decay of the sentiment information.
 
-LoRA is designed to make the fine-tuning of large models more efficient. Traditional fine-tuning of models like Llama 3 can be computationally expensive and resource-intensive. LoRA addresses this by introducing low-rank parameter matrices into the model's architecture. These matrices significantly reduce the number of parameters that need to be updated during fine-tuning, making the process faster and less resource-demanding without compromising performance.
+\subsubsection{\textbf{Features Combination with Traditional Quantitative Features}}
+The original price-volume data consists of opening price, closing price, highest price, lowest price, trading volume, and restoration factor. 
+With this information, various features can be created.
+The features encompass various aspects of market data, technical indicators, and statistical measures, enabling a holistic understanding of market dynamics. 
+A total of 158 features have been created using 'data loader' provided by Qlib.
 
-The fine-tuning process starts by initializing the pre-trained Llama 3 model. The pre-trained weights provide a solid foundation, having been trained on diverse and extensive datasets. LoRA layers are then integrated into Llama 3. These layers are low-rank matrices that capture task-specific adjustments, minimizing computational costs by only fine-tuning these layers. The training environment is configured, including setting hyperparameters such as learning rate, batch size, and number of epochs. Training and validation datasets are set up to ensure the model is trained on diverse sentiment-labeled texts.
+Here we treat the sentiment factor as a new type of feature, and combine it with traditional quantitative price-volume features to create a hybrid feature set.
 
-During fine-tuning, the model learns to adjust its weights based on the sentiment data. The LoRA layers capture the nuances of sentiment classification, updating only a small portion of the model's parameters, ensuring the process is efficient and effective. After initial fine-tuning, the model's performance is evaluated using metrics like accuracy, precision, recall, and F1-score on a validation set. Based on the performance, we may iterate on the fine-tuning process, adjusting hyperparameters or incorporating more data to improve the model's accuracy.
+\subsection{\textbf{Decision Generation}}
 
-The adoption of LoRA for fine-tuning Llama 3 offers several advantages. LoRA significantly reduces the computational resources required for fine-tuning large models. The fine-tuning process is faster due to the lower number of parameters being adjusted. Despite the reduced computational load, LoRA maintains high performance in task-specific adjustments. This approach allows for scalable fine-tuning, making it feasible to adapt Llama 3 for various specific tasks beyond sentiment analysis.
+In the prediction model section, the current choice is the LightGBM model, which is a gradient boosting framework based on decision trees. 
+During the training process, LightGBM constructs a series of decision trees iteratively, where each tree is built to minimize the residual errors of the previous trees. 
+The model ranks features based on their importance scores, which indicate the contribution of each feature to the prediction. 
+These importance scores can be used to generate a stock ranking list, displaying the significance of each stock in the model \cite{ke2017}.
 
-Once fine-tuned, Llama 3 is integrated into our sentiment analysis pipeline. The model processes real-time data from news and social media, classifying sentiments accurately and efficiently. The estimated sentiment value can therefore be used for downstream tasks. Utilizing LoRA for fine-tuning Llama 3 exemplifies a powerful and efficient approach to adapting LLMs for specific tasks such as sentiment analysis. This method not only enhances the model's capability to interpret sentiment but also ensures that the fine-tuning process is resource-efficient and scalable.
-
-\subsection{\textbf{Quantitative Trading Framework}}
-
-In quantitative investment, daily trading (such as portfolio management) and intraday trading (such as order execution) are typically analysed separately. However, to accurately evaluate the combined performance of these strategies, it is essential to integrate and backtest them together. This requires a robust framework capable of supporting multi-level joint backtesting.
-
-Most existing quantitative trading frameworks do not account for multi-level joint trading, leading to inaccurate backtesting outcomes. Additionally, optimizing strategies at different levels is interdependent. For example, the best portfolio management strategy might change depending on the efficiency of order execution strategies. A portfolio with a higher turnover could be more advantageous if order execution is improved.
-
-To achieve the best overall performance, it is necessary to consider how strategies at different levels interact. This quantitative trading framework not only enables precise joint backtesting but also ensures that the optimization of strategies at various levels is interconnected, thereby improving overall performance. By adopting this nested approach, we can comprehensively evaluate and optimize trading strategies, ensuring that enhancements in one area positively impact results in another. The input features used in our case include traditional quantitative factors and some newly introduced factors which will be discussed in the feature selection section.
-
-The design of the framework is illustrated in Figure \ref{fig:framework}. Each level comprises a Trading Agent and an Execution Environment (Execution Env). The Trading Agent includes a data processing module (Information Extractor), a forecasting module (Forecast Model), and a decision generator (Decision Generator). The Forecast Model seeks to find alpha and assess risk. The trading algorithm uses the Decision Generator to optimize the investment portfolio based on the trading signals produced by the Forecast Model. These decisions are then sent to the Execution Env, which provides the execution results.
-
-Our framework can customize the frequency of the trading algorithm, the decision content, and the execution environment to suit their needs (e.g., intraday trading, daily-frequency trading, weekly-frequency trading). Furthermore, the Execution Env can be nested with more granular trading algorithms and execution environments within it. For instance, daily-frequency orders can be split into finer-grained decisions for execution throughout the day.
-
-The flexibility of this nested decision execution framework enables us to explore the effects of combining different levels of trading strategies and to overcome optimization barriers between various levels of trading algorithms. This comprehensive approach facilitates a thorough evaluation and optimization of trading strategies across different timeframes and execution granularities, enhancing overall trading performance.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.5\textwidth]{framework.png}
-    \caption{Quantitative Trading Framework Design.}
-    \label{fig:framework}
-\end{figure}
-
-\subsection{\textbf{Data Feature Selection}}
-
-The original price data consists of opening price, closing price, highest price, lowest price, trading volume, and restoration factor. With this information, various features can be created.
-
-Heuristic principles for creating features include ensuring comparability across instruments by removing units from the features, thereby making them comparable between different instruments. Additionally, it is important to maintain distribution invariance, aiming to keep the distribution of features consistent to avoid biases. Finally, standardizing the feature scale is crucial to ensure that the scale of features is similar, which facilitates effective analysis and comparison.
-
-The features encompass various aspects of market data, technical indicators, and statistical measures, enabling a holistic understanding of market dynamics. A total of 158 features have been created using ‘data loader’ provided by Qlib. These can be categorized into several key groups:
-
-\begin{itemize}
-    \item \textbf{Price and Volume Metrics:} Includes open, high, low, and volume-weighted average prices, as well as high and low prices over different time intervals.
-    \item \textbf{Price Momentum and Rate of Change:} Rate of change metrics over different time periods, capturing momentum in price movements.
-    \item \textbf{Moving Averages:} Moving averages over different time intervals to identify trends and potential reversal points.
-    \item \textbf{Standard Deviation and Volatility:} Measures of volatility and dispersion, providing insights into market risk.
-    \item \textbf{Beta and R-Squared:} Beta coefficients and R-squared values relative to benchmark indices, indicating asset volatility and correlation.
-    \item \textbf{Regression Residuals and Statistical Measures:} Residuals from regression analysis and statistical measures to assess model fit and predictive power.
-    \item \textbf{Min-Max Values and Quantiles:} Maximum and minimum values, as well as quantiles, offering insights into distribution and extremes.
-    \item \textbf{Correlation and Counting Measures:} Correlation coefficients with other assets and counts of positive and negative changes.
-    \item \textbf{Sum and Count Measures:} Sums of positive and negative changes over different time intervals, capturing cumulative market movements.
-\end{itemize}
-
-\subsection{\textbf{Selection of Quantitative Trading Models}}
-
-In the prediction model section, the current choice is the LightGBM model, which is a gradient boosting framework based on decision trees. During the training process, LightGBM constructs a decision tree based on the target variable and input features, generating a stock ranking list that displays the importance score ranking of each stock.
-After generating the ranking list, we can use a simple rule-based \texttt{TopkDropoutStrategy} to determine the target amount of each stock. The strategy adopts the Topk-Drop algorithm, which sells and buys a fixed number of stocks every trading day based on the prediction scores. The detailed steps of the \texttt{TopkDropoutStrategy} are as follows:
+After generating the ranking list, we can use a simple rule-based \texttt{TopkDropoutStrategy} to determine the target amount of each stock. 
+The strategy adopts the Topk-Drop algorithm, which sells and buys a fixed number of stocks every trading day based on the prediction scores. 
+The detailed steps of the \texttt{TopkDropoutStrategy} are as follows:
 
 \begin{itemize}
     \item Adopt the Topk-Drop algorithm to calculate the target amount of each stock.
@@ -129,49 +167,33 @@ After generating the ranking list, we can use a simple rule-based \texttt{TopkDr
         \item \textbf{Drop}: The number of stocks sold on each trading day.
     \end{itemize}
     
-    In general, the number of stocks currently held is \texttt{Topk}, with the exception of being zero at the beginning period of trading. For each trading day, let $d$ be the number of the instruments currently held and with a rank $K$ when ranked by the prediction scores from high to low. Then $d$ number of stocks currently held with the worst prediction score will be sold, and the same number of unheld stocks with the best prediction score will be bought.
+    In general, the number of stocks currently held is \texttt{Topk}, with the exception of being zero at the beginning period of trading. 
+    For each trading day, let $d$ be the number of the instruments currently held and with a rank $K$ when ranked by the prediction scores from high to low. 
+    Then $d$ number of stocks currently held with the worst prediction score will be sold, and the same number of unheld stocks with the best prediction score will be bought.
     
     In general, $d=$ \texttt{Drop}, especially when the pool of the candidate instruments is large, $K$ is large, and \texttt{Drop} is small.
     
     In most cases, the Topk-Drop algorithm sells and buys \texttt{Drop} stocks every trading day, which yields a turnover rate of $2 \times \texttt{Drop} / K$.
     
     The following images illustrate a typical scenario.
+
     \begin{figure}[h]
         \centering
-        \includegraphics[width=0.5\textwidth]{topk_drop.png}
+        \includegraphics[width=0.4\textwidth]{topk_drop.png}
         \caption{TopkDropoutStrategy}
         \label{fig:TopkDropoutStrategy}
     \end{figure}
-    \item Generate the order list from the target amount.
+
+    \item Generate the order list from the target amount, and the order list is then sent to the Execution Environment for execution.
 \end{itemize}
 
-\section{\textbf{Backtesting Analysis}}
-\subsection{\textbf{Market Sentiment Scores Produced by Fine-Tuned LLM}}
+\section{\textbf{Backtesting Results}}
 
-In practice, the datasets with social media and news reports in English for Twitter and other social media platforms are applied to fine-tune the language model. Specifically, given the text of news reports about market and company information, the language model is required to give the estimated sentiment value (i.e., -1, 0, or 1).
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.5\textwidth]{sentiment_score.png}
-    \caption{Sentiment Scores Produced by Fine-tuned LLM.}
-    \label{fig:sentiment scores}
-\end{figure}
-
-As illustrated in Figure \ref{fig:sentiment scores}, the fine-tuned language model can assign sentiment values based on the analysis of news articles. Compared to other existing sentiment estimation methods, large language models provide more precise sentiment perception results. Once the sentiment values are estimated, they are used to calculate sentiment factors. These sentiment factors are then combined with traditional financial factors, such as price-to-earnings ratios, market trends, and historical performance data, to create a hybrid factor set. This comprehensive feature set provides a richer and more nuanced input for subsequent prediction models used in trading strategies.
-
-The sentiment estimation results can be further leveraged by exploiting the irrational behavior often observed in general market reactions. Since the language model is trained under human supervision and designed to mimic human behavior, its sentiment estimates reflect the general acknowledgment and mood of the market. By incorporating these sentiment insights, prediction models can identify and capitalize on market inefficiencies caused by irrational investor behavior.
-
-For example, if the language model detects a predominantly negative sentiment towards a particular stock due to temporary negative news, but the fundamental financial indicators remain strong, the prediction model can anticipate a potential rebound once the market corrects its overreaction. Conversely, overly positive sentiment driven by hype can signal overvaluation, prompting a cautious investment approach.
-
-\subsection{\textbf{Backtest Results of Quantitative Trading Strategies}}
-\subsubsection*{\textbf{Backtesting Time}}
-January 1, 2020 to August 1, 2022
-
-\subsubsection*{\textbf{Benchmark}}
-SPY, the SPDR S\&P 500 ETF trust, which is designed to track the S\&P 500 stock market index.
-
-\subsubsection*{\textbf{Commission}}
-0.0005
+\begin{itemize}
+    \item \textbf{Time Period:} January 1, 2020, to August 1, 2022.
+    \item \textbf{Benchmark:} SPY, the SPDR S\&P 500 ETF trust, designed to track the S\&P 500 stock market index.
+    \item \textbf{Transaction Cost:} Commission of 0.0005.
+\end{itemize}
 
 \begin{figure}[h!]
 \centering
@@ -221,7 +243,7 @@ Similar to the above but without transaction costs.
 \subsection*{\textbf{Backtesting Performance Overview}}
 \end{center}
 
-Our quantitative model's backtesting performance from January 1, 2020, to August 1, 2022, as shown in the Figure~\ref{fig:comprehensive report}, indicates different performance characteristics. Here are possible reasons for performance variations:
+Our quantitative model's backtesting performance from January 1, 2020, to August 1, 2022, as shown in the Fig.~\ref{fig:comprehensive report}, indicates different performance characteristics. Here are possible reasons for performance variations:
 
 \begin{enumerate}
     \item \textbf{Market Conditions}
@@ -272,7 +294,7 @@ Our quantitative model's backtesting performance from January 1, 2020, to August
     \subsection*{\textbf{Annualized Return}}
 \end{center}
 
-The annualized return measures the geometric average amount of money earned by an investment each year over a given time period, as shown in Figure~\ref{fig:annualized return}.
+The annualized return measures the geometric average amount of money earned by an investment each year over a given time period, as shown in Fig.~\ref{fig:annualized return}.
 
 \begin{figure}[h!]
 \centering
@@ -292,7 +314,7 @@ The annualized return measures the geometric average amount of money earned by a
     \subsection*{\textbf{Maximum Drawdown}}
 \end{center}
 
-Maximum drawdown represents the largest drop from a peak to a trough before a new peak is attained. It is a critical measure of downside risk, as shown in Figure~\ref{fig:maximum drawdown}.
+Maximum drawdown represents the largest drop from a peak to a trough before a new peak is attained. It is a critical measure of downside risk, as shown in Fig.~\ref{fig:maximum drawdown}.
 
 \begin{figure}[h!]
 \centering
@@ -312,7 +334,7 @@ Maximum drawdown represents the largest drop from a peak to a trough before a ne
     \subsection*{\textbf{Information Ratio}}
 \end{center}
 
-The information ratio is a measure of portfolio returns beyond the returns of a benchmark, usually an index, here we use SP500 as the benchmark, as shown in Figure~\ref{fig:information ratio}.
+The information ratio is a measure of portfolio returns beyond the returns of a benchmark, usually an index, here we use SP500 as the benchmark, as shown in Fig.~\ref{fig:information ratio}.
 
 \begin{figure}[h!]
 \centering
@@ -332,7 +354,7 @@ The information ratio is a measure of portfolio returns beyond the returns of a 
     \subsection*{\textbf{Standard Deviation}}
 \end{center}
 
-Standard deviation measures the amount of variability or dispersion around the mean return of an investment, as shown in Figure~\ref{fig:standard deviation}.
+Standard deviation measures the amount of variability or dispersion around the mean return of an investment, as shown in Fig.~\ref{fig:standard deviation}.
 
 \begin{figure}[h!]
 \centering
@@ -348,7 +370,7 @@ Standard deviation measures the amount of variability or dispersion around the m
     \item \textbf{Model Stability:} The declining standard deviation implies that the model's risk (in terms of return variability) has decreased, which is a positive sign of its robustness and reliability over time.
 \end{itemize}
 
-\section{\textbf{Strategy Summary}}
+\section{\textbf{Conclusion}}
 
 \subsection{\textbf{Problem Analysis}}
 
@@ -385,8 +407,12 @@ To address the identified issues and enhance the model's performance, several im
     \item \textbf{Utilize Specialized Sentiment Models}: While large models like Llama 3 have strong generalization capabilities, they might not always outperform specialized models in niche domains. Using smaller, domain-specific sentiment analysis models fine-tuned for financial texts may yield better results in extracting relevant sentiment signals from financial news and social media content.
 \end{itemize}
 
+\section{\textbf{Contribution}}
+
 \begin{thebibliography}{00}
-\bibitem{b1} X. Yang, W. Liu, D. Zhou, J. Bian, and T.-Y. Liu, “Qlib: An AI-oriented Quantitative Investment Platform.” arXiv, Sep. 22, 2020. Accessed: Jun. 21, 2024. [Online]. Available: http://arxiv.org/abs/2009.11189
+    \bibitem{yang2020} X. Yang, W. Liu, D. Zhou, J. Bian, and T.-Y. Liu, “Qlib: An AI-oriented Quantitative Investment Platform.” arXiv, Sep. 22, 2020. Accessed: Jun. 21, 2024. [Online]. Available: http://arxiv.org/abs/2009.11189
+    \bibitem{hu2021} E. J. Hu et al., “LoRA: Low-Rank Adaptation of Large Language Models.” arXiv, Oct. 16, 2021. Accessed: Jun. 27, 2024. [Online]. Available: http://arxiv.org/abs/2106.09685
+    \bibitem{ke2017} G. Ke et al., “LightGBM: A Highly Efficient Gradient Boosting Decision Tree”.
 \end{thebibliography}
 
 \end{document}
