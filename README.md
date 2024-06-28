@@ -1,4 +1,4 @@
-# COMPREHENSIVE Information Integration for High-Frequency Trading using Qlib and FinLLAMA
+# Enhanced Quantitative Trading Strategies through Sentiment Analysis Using Large Language Models
 
 This repository contains the implementation of a comprehensive information integration system for high-frequency trading (HFT) in stock markets. Our approach integrates nested decision execution framework for HFT operations and LLM for extracting and analyzing financial sentiments from news and social media.
 
@@ -69,7 +69,17 @@ Set up and run backtests using Qlib with the integrated sentiment data:
 python SimonsHFT/workflow.py backtest
 ```
 
-## Contributing (TBD)
+## Contributing
+
+**W. Ye** designed the workflow, deployed and fine-tuned the language models, developed the trading strategies, performed data analysis and wrote the manuscript.  
+**H. Li** conducted the related work review, forecast model selection, backtesting and wrote the poster.  
+**J. Li** conducted interference of LLM and integrated the sentiment analysis with traditional price-volume features.  
+All authors contributed to the design of the study.
+
+### Acknowledgment
+
+This work was supported by Jiachen Wang, Wentao Ye, Rui Chen and Hanyu Wei, who provided valuable computational resources.  
+We also thank the Qlib project in Microsoft Research Asia for providing the open-source quantitative investment platform and the Llama project in Meta AI for providing the pre-trained language models.
 
 ## License
 
