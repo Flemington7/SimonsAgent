@@ -53,9 +53,9 @@ To set up the environment, you need to install the required dependencies for bot
 
 2. **Financial Data**: Download and prepare the financial data as required by Qlib. Follow the Qlib documentation for setting up data. As mentioned above, we will integrate the sentiment data with the financial data, and convert it into a format that suitable for backtesting.
 
-## [FinLLAMA](FinLLAMA/README.md)
+## [FinLLAMA](/src/FinLLAMA/README.md)
 
-## [SimonsHFT](SimonsHFT/README.md)
+## [SimonsHFT](/src/SimonsHFT/README.md)
 
 ## Evaluation (TBD)
 
